@@ -1,0 +1,41 @@
+1c1
+< /* contrib/pg_stat_statements/pg_stat_statements--1.8--1.9.sql */
+---
+> /* contrib/pg_stat_statements/pg_stat_statements--1.9--1.10.sql */
+4,18c4
+< \echo Use "ALTER EXTENSION pg_stat_statements UPDATE TO '1.9'" to load this file. \quit
+< 
+< --- Define pg_stat_statements_info
+< CREATE FUNCTION pg_stat_statements_info(
+<     OUT dealloc bigint,
+<     OUT stats_reset timestamp with time zone
+< )
+< RETURNS record
+< AS 'MODULE_PATHNAME'
+< LANGUAGE C STRICT VOLATILE PARALLEL SAFE;
+< 
+< CREATE VIEW pg_stat_statements_info AS
+<   SELECT * FROM pg_stat_statements_info();
+< 
+< GRANT SELECT ON pg_stat_statements_info TO PUBLIC;
+---
+> \echo Use "ALTER EXTENSION pg_stat_statements UPDATE TO '1.10'" to load this file. \quit
+59a46,47
+>     OUT temp_blk_read_time float8,
+>     OUT temp_blk_write_time float8,
+62c50,58
+<     OUT wal_bytes numeric
+---
+>     OUT wal_bytes numeric,
+>     OUT jit_functions int8,
+>     OUT jit_generation_time float8,
+>     OUT jit_inlining_count int8,
+>     OUT jit_inlining_time float8,
+>     OUT jit_optimization_count int8,
+>     OUT jit_optimization_time float8,
+>     OUT jit_emission_count int8,
+>     OUT jit_emission_time float8
+65c61
+< AS 'MODULE_PATHNAME', 'pg_stat_statements_1_9'
+---
+> AS 'MODULE_PATHNAME', 'pg_stat_statements_1_10'
