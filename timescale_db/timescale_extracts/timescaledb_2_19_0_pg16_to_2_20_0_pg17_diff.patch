@@ -1,0 +1,230 @@
+--- timescale_extracts/timescaledb_2_19_0_pg16.out	2025-07-06 13:08:15.807031213 +0530
++++ timescale_extracts/timescaledb_2_20_0_pg17.out	2025-07-06 13:08:31.330233101 +0530
+@@ -1,12 +1,12 @@
+ -- PostgreSQL and TimescaleDB Version Information
+                                          version                                         
+ -----------------------------------------------------------------------------------------
+- PostgreSQL 16.8 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
++ PostgreSQL 17.5 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+ (1 row)
+ 
+    extname   | extversion 
+ -------------+------------
+- timescaledb | 2.19.0
++ timescaledb | 2.20.0
+ (1 row)
+ 
+ 
+@@ -26,7 +26,7 @@
+ timescaledb_information|dimensions|hypertable_schema, hypertable_name, dimension_number, column_name, column_type, dimension_type, time_interval, integer_interval, integer_now_func, num_partitions
+ timescaledb_information|hypertable_columnstore_settings|hypertable, segmentby, orderby, compress_interval_length
+ timescaledb_information|hypertable_compression_settings|hypertable, segmentby, orderby, compress_interval_length
+-timescaledb_information|hypertables|hypertable_schema, hypertable_name, owner, num_dimensions, num_chunks, compression_enabled, tablespaces
++timescaledb_information|hypertables|hypertable_schema, hypertable_name, owner, num_dimensions, num_chunks, compression_enabled, tablespaces, primary_dimension, primary_dimension_type
+ timescaledb_information|job_errors|job_id, proc_schema, proc_name, pid, start_time, finish_time, sqlerrcode, err_message
+ timescaledb_information|job_history|id, job_id, succeeded, proc_schema, proc_name, pid, start_time, finish_time, config, sqlerrcode, err_message
+ timescaledb_information|job_stats|hypertable_schema, hypertable_name, job_id, last_run_started_at, last_successful_finish, last_run_status, job_status, last_run_duration, next_start, total_runs, total_successes, total_failures
+@@ -63,7 +63,6 @@
+ _timescaledb_internal|compressed_chunk_remote_stats|schema_name_in name, table_name_in name|record
+ _timescaledb_internal|continuous_agg_invalidation_trigger||trigger
+ _timescaledb_internal|create_chunk|hypertable regclass, _slices jsonb, _schema_name name DEFAULT NULL::name, _table_name name DEFAULT NULL::name, chunk_table regclass DEFAULT NULL::regclass|record
+-_timescaledb_internal|create_chunk_table|hypertable regclass, slices jsonb, schema_name name, table_name name|bool
+ _timescaledb_internal|create_compressed_chunk|chunk regclass, chunk_table regclass, uncompressed_heap_size bigint, uncompressed_toast_size bigint, uncompressed_index_size bigint, compressed_heap_size bigint, compressed_toast_size bigint, compressed_index_size bigint, numrows_pre_compression bigint, numrows_post_compression bigint|regclass
+ _timescaledb_internal|drop_chunk|chunk regclass|bool
+ _timescaledb_internal|finalize_agg|agg_name text, inner_agg_collation_schema name, inner_agg_collation_name name, inner_agg_input_types name[], inner_agg_serialized_state bytea, return_type_dummy_val anyelement|anyelement
+@@ -114,19 +113,19 @@
+ _timescaledb_internal|unfreeze_chunk|chunk regclass|bool
+ public|add_columnstore_policy|IN hypertable regclass, IN after "any" DEFAULT NULL::unknown, IN if_not_exists boolean DEFAULT false, IN schedule_interval interval DEFAULT NULL::interval, IN initial_start timestamp with time zone DEFAULT NULL::timestamp with time zone, IN timezone text DEFAULT NULL::text, IN created_before interval DEFAULT NULL::interval, IN hypercore_use_access_method boolean DEFAULT NULL::boolean|void
+ public|add_compression_policy|hypertable regclass, compress_after "any" DEFAULT NULL::unknown, if_not_exists boolean DEFAULT false, schedule_interval interval DEFAULT NULL::interval, initial_start timestamp with time zone DEFAULT NULL::timestamp with time zone, timezone text DEFAULT NULL::text, compress_created_before interval DEFAULT NULL::interval, hypercore_use_access_method boolean DEFAULT NULL::boolean|int4
+-public|add_continuous_aggregate_policy|continuous_aggregate regclass, start_offset "any", end_offset "any", schedule_interval interval, if_not_exists boolean DEFAULT false, initial_start timestamp with time zone DEFAULT NULL::timestamp with time zone, timezone text DEFAULT NULL::text, include_tiered_data boolean DEFAULT NULL::boolean, buckets_per_batch integer DEFAULT NULL::integer, max_batches_per_execution integer DEFAULT NULL::integer|int4
++public|add_continuous_aggregate_policy|continuous_aggregate regclass, start_offset "any", end_offset "any", schedule_interval interval, if_not_exists boolean DEFAULT false, initial_start timestamp with time zone DEFAULT NULL::timestamp with time zone, timezone text DEFAULT NULL::text, include_tiered_data boolean DEFAULT NULL::boolean, buckets_per_batch integer DEFAULT NULL::integer, max_batches_per_execution integer DEFAULT NULL::integer, refresh_newest_first boolean DEFAULT NULL::boolean|int4
+ public|add_dimension|hypertable regclass, column_name name, number_partitions integer DEFAULT NULL::integer, chunk_time_interval anyelement DEFAULT NULL::bigint, partitioning_func regproc DEFAULT NULL::regproc, if_not_exists boolean DEFAULT false|record
+ public|add_dimension|hypertable regclass, dimension _timescaledb_internal.dimension_info, if_not_exists boolean DEFAULT false|record
+-public|add_job|proc regproc, schedule_interval interval, config jsonb DEFAULT NULL::jsonb, initial_start timestamp with time zone DEFAULT NULL::timestamp with time zone, scheduled boolean DEFAULT true, check_config regproc DEFAULT NULL::regproc, fixed_schedule boolean DEFAULT true, timezone text DEFAULT NULL::text|int4
++public|add_job|proc regproc, schedule_interval interval, config jsonb DEFAULT NULL::jsonb, initial_start timestamp with time zone DEFAULT NULL::timestamp with time zone, scheduled boolean DEFAULT true, check_config regproc DEFAULT NULL::regproc, fixed_schedule boolean DEFAULT true, timezone text DEFAULT NULL::text, job_name text DEFAULT NULL::text|int4
+ public|add_reorder_policy|hypertable regclass, index_name name, if_not_exists boolean DEFAULT false, initial_start timestamp with time zone DEFAULT NULL::timestamp with time zone, timezone text DEFAULT NULL::text|int4
+ public|add_retention_policy|relation regclass, drop_after "any" DEFAULT NULL::unknown, if_not_exists boolean DEFAULT false, schedule_interval interval DEFAULT NULL::interval, initial_start timestamp with time zone DEFAULT NULL::timestamp with time zone, timezone text DEFAULT NULL::text, drop_created_before interval DEFAULT NULL::interval|int4
+-public|alter_job|job_id integer, schedule_interval interval DEFAULT NULL::interval, max_runtime interval DEFAULT NULL::interval, max_retries integer DEFAULT NULL::integer, retry_period interval DEFAULT NULL::interval, scheduled boolean DEFAULT NULL::boolean, config jsonb DEFAULT NULL::jsonb, next_start timestamp with time zone DEFAULT NULL::timestamp with time zone, if_exists boolean DEFAULT false, check_config regproc DEFAULT NULL::regproc, fixed_schedule boolean DEFAULT NULL::boolean, initial_start timestamp with time zone DEFAULT NULL::timestamp with time zone, timezone text DEFAULT NULL::text|record
++public|alter_job|job_id integer, schedule_interval interval DEFAULT NULL::interval, max_runtime interval DEFAULT NULL::interval, max_retries integer DEFAULT NULL::integer, retry_period interval DEFAULT NULL::interval, scheduled boolean DEFAULT NULL::boolean, config jsonb DEFAULT NULL::jsonb, next_start timestamp with time zone DEFAULT NULL::timestamp with time zone, if_exists boolean DEFAULT false, check_config regproc DEFAULT NULL::regproc, fixed_schedule boolean DEFAULT NULL::boolean, initial_start timestamp with time zone DEFAULT NULL::timestamp with time zone, timezone text DEFAULT NULL::text, job_name text DEFAULT NULL::text|record
+ public|chunk_columnstore_stats|hypertable regclass|record
+ public|chunk_compression_stats|hypertable regclass|record
+ public|chunks_detailed_size|hypertable regclass|record
+ public|compress_chunk|uncompressed_chunk regclass, if_not_compressed boolean DEFAULT true, recompress boolean DEFAULT false, hypercore_use_access_method boolean DEFAULT NULL::boolean|regclass
+-public|create_hypertable|relation regclass, dimension _timescaledb_internal.dimension_info, create_default_indexes boolean DEFAULT true, if_not_exists boolean DEFAULT false, migrate_data boolean DEFAULT false|record
+ public|create_hypertable|relation regclass, time_column_name name, partitioning_column name DEFAULT NULL::name, number_partitions integer DEFAULT NULL::integer, associated_schema_name name DEFAULT NULL::name, associated_table_prefix name DEFAULT NULL::name, chunk_time_interval anyelement DEFAULT NULL::bigint, create_default_indexes boolean DEFAULT true, if_not_exists boolean DEFAULT false, partitioning_func regproc DEFAULT NULL::regproc, migrate_data boolean DEFAULT false, chunk_target_size text DEFAULT NULL::text, chunk_sizing_func regproc DEFAULT '_timescaledb_functions.calculate_chunk_interval'::regproc, time_partitioning_func regproc DEFAULT NULL::regproc|record
++public|create_hypertable|relation regclass, dimension _timescaledb_internal.dimension_info, create_default_indexes boolean DEFAULT true, if_not_exists boolean DEFAULT false, migrate_data boolean DEFAULT false|record
+ public|decompress_chunk|uncompressed_chunk regclass, if_compressed boolean DEFAULT true|regclass
+ public|delete_job|job_id integer|void
+ public|disable_chunk_skipping|hypertable regclass, column_name name, if_not_exists boolean DEFAULT false|record
+@@ -154,6 +153,7 @@
+ public|set_adaptive_chunking|hypertable regclass, chunk_target_size text, INOUT chunk_sizing_func regproc DEFAULT '_timescaledb_functions.calculate_chunk_interval'::regproc, OUT chunk_target_size bigint|record
+ public|set_chunk_time_interval|hypertable regclass, chunk_time_interval anyelement, dimension_name name DEFAULT NULL::name|void
+ public|show_chunks|relation regclass, older_than "any" DEFAULT NULL::unknown, newer_than "any" DEFAULT NULL::unknown, created_before "any" DEFAULT NULL::unknown, created_after "any" DEFAULT NULL::unknown|regclass
++public|split_chunk|IN chunk regclass, IN split_at "any" DEFAULT NULL::unknown|void
+ public|timescaledb_post_restore||bool
+ public|timescaledb_pre_restore||bool
+ timescaledb_experimental|add_policies|relation regclass, if_not_exists boolean DEFAULT false, refresh_start_offset "any" DEFAULT NULL::unknown, refresh_end_offset "any" DEFAULT NULL::unknown, compress_after "any" DEFAULT NULL::unknown, drop_after "any" DEFAULT NULL::unknown, hypercore_use_access_method boolean DEFAULT NULL::boolean|bool
+@@ -161,14 +161,14 @@
+ timescaledb_experimental|remove_all_policies|relation regclass, if_exists boolean DEFAULT false|bool
+ timescaledb_experimental|remove_policies|relation regclass, if_exists boolean DEFAULT false, VARIADIC policy_names text[] DEFAULT NULL::text[]|bool
+ timescaledb_experimental|show_policies|relation regclass|jsonb
++timescaledb_experimental|time_bucket_ng|bucket_width interval, ts date, origin date|date
++timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp with time zone, origin timestamp with time zone|timestamptz
+ timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp with time zone|timestamptz
++timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp with time zone, origin timestamp with time zone, timezone text|timestamptz
++timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp with time zone, timezone text|timestamptz
+ timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp without time zone, origin timestamp without time zone|timestamp
+-timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp with time zone, origin timestamp with time zone|timestamptz
+ timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp without time zone|timestamp
+-timescaledb_experimental|time_bucket_ng|bucket_width interval, ts date, origin date|date
+ timescaledb_experimental|time_bucket_ng|bucket_width interval, ts date|date
+-timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp with time zone, timezone text|timestamptz
+-timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp with time zone, origin timestamp with time zone, timezone text|timestamptz
+ 
+ -- ================================================================================
+ -- TIMESCALEDB VIEW DEFINITIONS
+@@ -450,26 +450,39 @@
+            FROM UNNEST(s.orderby, s.orderby_desc, s.orderby_nullsfirst) un_1(orderby, "desc", nullsfirst)) un ON true;
+ timescaledb_information|
+ hypertables|
++ WITH hypertable_info AS (
++         SELECT di.hypertable_id,
++            ht_1.schema_name,
++            ht_1.table_name,
++            ht_1.num_dimensions,
++            ht_1.compression_state,
++            di.column_name,
++            di.column_type,
++            di.interval_length,
++            ht_1.compression_state = 1 AS compression_enabled,
++            row_number() OVER (PARTITION BY di.hypertable_id ORDER BY di.id) AS dimension_num
++           FROM _timescaledb_catalog.hypertable ht_1
++             JOIN _timescaledb_catalog.dimension di ON ht_1.id = di.hypertable_id
++        )
+  SELECT ht.schema_name AS hypertable_schema,
+     ht.table_name AS hypertable_name,
+     t.tableowner AS owner,
+     ht.num_dimensions,
+     ( SELECT count(1) AS count
+            FROM _timescaledb_catalog.chunk ch
+-          WHERE ch.hypertable_id = ht.id AND ch.dropped IS FALSE AND ch.osm_chunk IS FALSE) AS num_chunks,
+-        CASE
+-            WHEN ht.compression_state = 1 THEN true
+-            ELSE false
+-        END AS compression_enabled,
+-    srchtbs.tablespace_list AS tablespaces
+-   FROM _timescaledb_catalog.hypertable ht
++          WHERE ch.hypertable_id = ht.hypertable_id AND ch.dropped IS FALSE AND ch.osm_chunk IS FALSE) AS num_chunks,
++    ht.compression_enabled,
++    srchtbs.tablespace_list AS tablespaces,
++    ht.column_name AS primary_dimension,
++    ht.column_type AS primary_dimension_type
++   FROM hypertable_info ht
+      JOIN pg_tables t ON ht.table_name = t.tablename AND ht.schema_name = t.schemaname
+-     LEFT JOIN _timescaledb_catalog.continuous_agg ca ON ca.mat_hypertable_id = ht.id
++     LEFT JOIN _timescaledb_catalog.continuous_agg ca ON ca.mat_hypertable_id = ht.hypertable_id
+      LEFT JOIN ( SELECT tablespace.hypertable_id,
+             array_agg(tablespace.tablespace_name ORDER BY tablespace.id) AS tablespace_list
+            FROM _timescaledb_catalog.tablespace
+-          GROUP BY tablespace.hypertable_id) srchtbs ON ht.id = srchtbs.hypertable_id
+-  WHERE ht.compression_state <> 2 AND ca.mat_hypertable_id IS NULL;
++          GROUP BY tablespace.hypertable_id) srchtbs ON ht.hypertable_id = srchtbs.hypertable_id
++  WHERE ht.compression_state <> 2 AND ca.mat_hypertable_id IS NULL AND ht.interval_length IS NOT NULL AND ht.dimension_num = 1;
+ timescaledb_information|
+ job_errors|
+  SELECT h.job_id,
+@@ -589,13 +602,14 @@
+     j.config,
+     js.next_start,
+     j.initial_start,
+-    ht.schema_name AS hypertable_schema,
+-    ht.table_name AS hypertable_name,
++    COALESCE(ca.user_view_schema, ht.schema_name) AS hypertable_schema,
++    COALESCE(ca.user_view_name, ht.table_name) AS hypertable_name,
+     j.check_schema,
+     j.check_name
+    FROM _timescaledb_config.bgw_job j
+      LEFT JOIN _timescaledb_catalog.hypertable ht ON ht.id = j.hypertable_id
+-     LEFT JOIN _timescaledb_internal.bgw_job_stat js ON js.job_id = j.id;
++     LEFT JOIN _timescaledb_internal.bgw_job_stat js ON js.job_id = j.id
++     LEFT JOIN _timescaledb_catalog.continuous_agg ca ON ca.mat_hypertable_id = j.hypertable_id;
+ 
+ -- ================================================================================
+ -- TIMESCALEDB INFORMATION SCHEMA VIEWS
+@@ -838,26 +852,39 @@
+ timescaledb_information|
+ hypertables|
+ postgres|
++ WITH hypertable_info AS (
++         SELECT di.hypertable_id,
++            ht_1.schema_name,
++            ht_1.table_name,
++            ht_1.num_dimensions,
++            ht_1.compression_state,
++            di.column_name,
++            di.column_type,
++            di.interval_length,
++            (ht_1.compression_state = 1) AS compression_enabled,
++            row_number() OVER (PARTITION BY di.hypertable_id ORDER BY di.id) AS dimension_num
++           FROM (_timescaledb_catalog.hypertable ht_1
++             JOIN _timescaledb_catalog.dimension di ON ((ht_1.id = di.hypertable_id)))
++        )
+  SELECT ht.schema_name AS hypertable_schema,
+     ht.table_name AS hypertable_name,
+     t.tableowner AS owner,
+     ht.num_dimensions,
+     ( SELECT count(1) AS count
+            FROM _timescaledb_catalog.chunk ch
+-          WHERE ((ch.hypertable_id = ht.id) AND (ch.dropped IS FALSE) AND (ch.osm_chunk IS FALSE))) AS num_chunks,
+-        CASE
+-            WHEN (ht.compression_state = 1) THEN true
+-            ELSE false
+-        END AS compression_enabled,
+-    srchtbs.tablespace_list AS tablespaces
+-   FROM (((_timescaledb_catalog.hypertable ht
++          WHERE ((ch.hypertable_id = ht.hypertable_id) AND (ch.dropped IS FALSE) AND (ch.osm_chunk IS FALSE))) AS num_chunks,
++    ht.compression_enabled,
++    srchtbs.tablespace_list AS tablespaces,
++    ht.column_name AS primary_dimension,
++    ht.column_type AS primary_dimension_type
++   FROM (((hypertable_info ht
+      JOIN pg_tables t ON (((ht.table_name = t.tablename) AND (ht.schema_name = t.schemaname))))
+-     LEFT JOIN _timescaledb_catalog.continuous_agg ca ON ((ca.mat_hypertable_id = ht.id)))
++     LEFT JOIN _timescaledb_catalog.continuous_agg ca ON ((ca.mat_hypertable_id = ht.hypertable_id)))
+      LEFT JOIN ( SELECT tablespace.hypertable_id,
+             array_agg(tablespace.tablespace_name ORDER BY tablespace.id) AS tablespace_list
+            FROM _timescaledb_catalog.tablespace
+-          GROUP BY tablespace.hypertable_id) srchtbs ON ((ht.id = srchtbs.hypertable_id)))
+-  WHERE ((ht.compression_state <> 2) AND (ca.mat_hypertable_id IS NULL));
++          GROUP BY tablespace.hypertable_id) srchtbs ON ((ht.hypertable_id = srchtbs.hypertable_id)))
++  WHERE ((ht.compression_state <> 2) AND (ca.mat_hypertable_id IS NULL) AND (ht.interval_length IS NOT NULL) AND (ht.dimension_num = 1));
+ timescaledb_information|
+ job_errors|
+ postgres|
+@@ -981,13 +1008,14 @@
+     j.config,
+     js.next_start,
+     j.initial_start,
+-    ht.schema_name AS hypertable_schema,
+-    ht.table_name AS hypertable_name,
++    COALESCE(ca.user_view_schema, ht.schema_name) AS hypertable_schema,
++    COALESCE(ca.user_view_name, ht.table_name) AS hypertable_name,
+     j.check_schema,
+     j.check_name
+-   FROM ((_timescaledb_config.bgw_job j
++   FROM (((_timescaledb_config.bgw_job j
+      LEFT JOIN _timescaledb_catalog.hypertable ht ON ((ht.id = j.hypertable_id)))
+-     LEFT JOIN _timescaledb_internal.bgw_job_stat js ON ((js.job_id = j.id)));
++     LEFT JOIN _timescaledb_internal.bgw_job_stat js ON ((js.job_id = j.id)))
++     LEFT JOIN _timescaledb_catalog.continuous_agg ca ON ((ca.mat_hypertable_id = j.hypertable_id)));
+ 
+ -- ================================================================================
+ -- TIMESCALEDB CATALOG TABLES
+@@ -1076,6 +1104,6 @@
+ extrelocatable|
+ schema_name
+ timescaledb|
+-2.19.0|
++2.20.0|
+ f|
+ public

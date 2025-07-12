@@ -1,0 +1,512 @@
+--- timescale_extracts/timescaledb_2_14_0_pg13.out	2025-07-06 13:06:58.181924445 +0530
++++ timescale_extracts/timescaledb_2_15_0_pg13.out	2025-07-06 13:07:13.699159313 +0530
+@@ -1,12 +1,12 @@
+ -- PostgreSQL and TimescaleDB Version Information
+                                                       version                                                      
+ -------------------------------------------------------------------------------------------------------------------
+- PostgreSQL 13.13 on x86_64-pc-linux-musl, compiled by gcc (Alpine 12.2.1_git20220924-r10) 12.2.1 20220924, 64-bit
++ PostgreSQL 13.14 on x86_64-pc-linux-musl, compiled by gcc (Alpine 12.2.1_git20220924-r10) 12.2.1 20220924, 64-bit
+ (1 row)
+ 
+    extname   | extversion 
+ -------------+------------
+- timescaledb | 2.14.0
++ timescaledb | 2.15.0
+ (1 row)
+ 
+ 
+@@ -18,12 +18,15 @@
+ _timescaledb_internal|compressed_chunk_stats|hypertable_schema, hypertable_name, chunk_schema, chunk_name, compression_status, uncompressed_heap_size, uncompressed_index_size, uncompressed_toast_size, uncompressed_total_size, compressed_heap_size, compressed_index_size, compressed_toast_size, compressed_total_size
+ _timescaledb_internal|hypertable_chunk_local_size|hypertable_schema, hypertable_name, hypertable_id, chunk_id, chunk_schema, chunk_name, total_bytes, heap_bytes, index_bytes, toast_bytes, compressed_total_size, compressed_heap_size, compressed_index_size, compressed_toast_size
+ timescaledb_experimental|policies|relation_name, relation_schema, schedule_interval, proc_schema, proc_name, config, hypertable_schema, hypertable_name
++timescaledb_information|chunk_compression_settings|hypertable, chunk, segmentby, orderby
+ timescaledb_information|chunks|hypertable_schema, hypertable_name, chunk_schema, chunk_name, primary_dimension, primary_dimension_type, range_start, range_end, range_start_integer, range_end_integer, is_compressed, chunk_tablespace, chunk_creation_time
+ timescaledb_information|compression_settings|hypertable_schema, hypertable_name, attname, segmentby_column_index, orderby_column_index, orderby_asc, orderby_nullsfirst
+ timescaledb_information|continuous_aggregates|hypertable_schema, hypertable_name, view_schema, view_name, view_owner, materialized_only, compression_enabled, materialization_hypertable_schema, materialization_hypertable_name, view_definition, finalized
+ timescaledb_information|dimensions|hypertable_schema, hypertable_name, dimension_number, column_name, column_type, dimension_type, time_interval, integer_interval, integer_now_func, num_partitions
++timescaledb_information|hypertable_compression_settings|hypertable, segmentby, orderby, compress_interval_length
+ timescaledb_information|hypertables|hypertable_schema, hypertable_name, owner, num_dimensions, num_chunks, compression_enabled, tablespaces
+ timescaledb_information|job_errors|job_id, proc_schema, proc_name, pid, start_time, finish_time, sqlerrcode, err_message
++timescaledb_information|job_history|id, job_id, succeeded, proc_schema, proc_name, pid, start_time, finish_time, config, sqlerrcode, err_message
+ timescaledb_information|job_stats|hypertable_schema, hypertable_name, job_id, last_run_started_at, last_successful_finish, last_run_status, job_status, last_run_duration, next_start, total_runs, total_successes, total_failures
+ timescaledb_information|jobs|job_id, application_name, schedule_interval, max_runtime, max_retries, retry_period, proc_schema, proc_name, owner, scheduled, fixed_schedule, config, next_start, initial_start, hypertable_schema, hypertable_name, check_schema, check_name
+ 
+@@ -67,32 +70,22 @@
+ _timescaledb_internal|freeze_chunk|chunk regclass|bool
+ _timescaledb_internal|generate_uuid||uuid
+ _timescaledb_internal|get_approx_row_count|relation regclass|int8
+-_timescaledb_internal|get_chunk_colstats|relid regclass|record
+-_timescaledb_internal|get_chunk_relstats|relid regclass|record
+ _timescaledb_internal|get_compressed_chunk_index_for_recompression|uncompressed_chunk regclass|regclass
+ _timescaledb_internal|get_create_command|table_name name|text
+ _timescaledb_internal|get_git_commit||record
+ _timescaledb_internal|get_os_info||record
+ _timescaledb_internal|get_partition_for_key|val anyelement|int4
+ _timescaledb_internal|get_partition_hash|val anyelement|int4
+-_timescaledb_internal|hypertable_invalidation_log_delete|raw_hypertable_id integer|void
+ _timescaledb_internal|hypertable_local_size|schema_name_in name, table_name_in name|record
+ _timescaledb_internal|indexes_local_size|schema_name_in name, table_name_in name|record
+ _timescaledb_internal|insert_blocker||trigger
+ _timescaledb_internal|interval_to_usec|chunk_interval interval|int8
+-_timescaledb_internal|invalidation_cagg_log_add_entry|mat_hypertable_id integer, start_time bigint, end_time bigint|void
+-_timescaledb_internal|invalidation_hyper_log_add_entry|raw_hypertable_id integer, start_time bigint, end_time bigint|void
+-_timescaledb_internal|invalidation_process_cagg_log|mat_hypertable_id integer, raw_hypertable_id integer, dimtype regtype, window_start bigint, window_end bigint, mat_hypertable_ids integer[], bucket_widths bigint[], max_bucket_widths bigint[], bucket_functions text[]|record
+-_timescaledb_internal|invalidation_process_cagg_log|mat_hypertable_id integer, raw_hypertable_id integer, dimtype regtype, window_start bigint, window_end bigint, mat_hypertable_ids integer[], bucket_widths bigint[], max_bucket_widths bigint[]|record
+-_timescaledb_internal|invalidation_process_hypertable_log|mat_hypertable_id integer, raw_hypertable_id integer, dimtype regtype, mat_hypertable_ids integer[], bucket_widths bigint[], max_bucket_widths bigint[], bucket_functions text[]|void
+-_timescaledb_internal|invalidation_process_hypertable_log|mat_hypertable_id integer, raw_hypertable_id integer, dimtype regtype, mat_hypertable_ids integer[], bucket_widths bigint[], max_bucket_widths bigint[]|void
+-_timescaledb_internal|materialization_invalidation_log_delete|mat_hypertable_id integer|void
+ _timescaledb_internal|partialize_agg|arg anyelement|bytea
+ _timescaledb_internal|policy_compression|job_id integer, config jsonb|void
+ _timescaledb_internal|policy_compression_check|config jsonb|void
+ _timescaledb_internal|policy_compression_execute|job_id integer, htid integer, lag anyelement, maxchunks integer, verbose_log boolean, recompress_enabled boolean, use_creation_time boolean|void
+-_timescaledb_internal|policy_job_error_retention|job_id integer, config jsonb|int4
+-_timescaledb_internal|policy_job_error_retention_check|config jsonb|void
++_timescaledb_internal|policy_job_stat_history_retention|job_id integer, config jsonb|int4
++_timescaledb_internal|policy_job_stat_history_retention_check|config jsonb|void
+ _timescaledb_internal|policy_recompression|job_id integer, config jsonb|void
+ _timescaledb_internal|policy_refresh_continuous_aggregate|job_id integer, config jsonb|void
+ _timescaledb_internal|policy_refresh_continuous_aggregate_check|config jsonb|void
+@@ -158,13 +151,13 @@
+ timescaledb_experimental|remove_all_policies|relation regclass, if_exists boolean DEFAULT false|bool
+ timescaledb_experimental|remove_policies|relation regclass, if_exists boolean DEFAULT false, VARIADIC policy_names text[] DEFAULT NULL::text[]|bool
+ timescaledb_experimental|show_policies|relation regclass|jsonb
++timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp with time zone, origin timestamp with time zone|timestamptz
++timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp with time zone|timestamptz
++timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp with time zone, origin timestamp with time zone, timezone text|timestamptz
+ timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp with time zone, timezone text|timestamptz
++timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp without time zone, origin timestamp without time zone|timestamp
+ timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp without time zone|timestamp
+-timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp with time zone, origin timestamp with time zone, timezone text|timestamptz
+-timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp with time zone|timestamptz
+-timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp with time zone, origin timestamp with time zone|timestamptz
+ timescaledb_experimental|time_bucket_ng|bucket_width interval, ts date, origin date|date
+-timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp without time zone, origin timestamp without time zone|timestamp
+ timescaledb_experimental|time_bucket_ng|bucket_width interval, ts date|date
+ 
+ -- ================================================================================
+@@ -237,6 +230,27 @@
+      JOIN _timescaledb_catalog.continuous_agg ca ON ca.mat_hypertable_id = j.hypertable_id
+      JOIN _timescaledb_catalog.hypertable ht ON ht.id = ca.mat_hypertable_id;
+ timescaledb_information|
++chunk_compression_settings|
++ SELECT format('%I.%I'::text, ht.schema_name, ht.table_name)::regclass AS hypertable,
++    format('%I.%I'::text, ch.schema_name, ch.table_name)::regclass AS chunk,
++    array_to_string(s.segmentby, ','::text) AS segmentby,
++    un.orderby
++   FROM _timescaledb_catalog.hypertable ht
++     JOIN _timescaledb_catalog.chunk ch ON ch.hypertable_id = ht.id
++     JOIN _timescaledb_catalog.chunk ch2 ON ch2.id = ch.compressed_chunk_id
++     LEFT JOIN _timescaledb_catalog.compression_settings s ON format('%I.%I'::text, ch2.schema_name, ch2.table_name)::regclass::oid = s.relid::oid
++     LEFT JOIN LATERAL ( SELECT string_agg(format('%I%s%s'::text, un_1.orderby,
++                CASE
++                    WHEN un_1."desc" THEN ' DESC'::text
++                    ELSE ''::text
++                END,
++                CASE
++                    WHEN un_1.nullsfirst AND NOT un_1."desc" THEN ' NULLS FIRST'::text
++                    WHEN NOT un_1.nullsfirst AND un_1."desc" THEN ' NULLS LAST'::text
++                    ELSE ''::text
++                END), ','::text) AS orderby
++           FROM UNNEST(s.orderby, s.orderby_desc, s.orderby_nullsfirst) un_1(orderby, "desc", nullsfirst)) un ON true;
++timescaledb_information|
+ chunks|
+  SELECT finalq.hypertable_schema,
+     finalq.hypertable_name,
+@@ -259,19 +273,19 @@
+             dim.column_type AS primary_dimension_type,
+             row_number() OVER (PARTITION BY chcons.chunk_id ORDER BY dim.id) AS chunk_dimension_num,
+                 CASE
+-                    WHEN dim.column_type::oid = 'timestamp without time zone'::regtype::oid OR dim.column_type::oid = 'timestamp with time zone'::regtype::oid OR dim.column_type::oid = 'date'::regtype::oid THEN _timescaledb_functions.to_timestamp(dimsl.range_start)
++                    WHEN dim.column_type::oid = ANY (ARRAY['timestamp without time zone'::regtype, 'timestamp with time zone'::regtype, 'date'::regtype]::oid[]) THEN _timescaledb_functions.to_timestamp(dimsl.range_start)
+                     ELSE NULL::timestamp with time zone
+                 END AS range_start,
+                 CASE
+-                    WHEN dim.column_type::oid = 'timestamp without time zone'::regtype::oid OR dim.column_type::oid = 'timestamp with time zone'::regtype::oid OR dim.column_type::oid = 'date'::regtype::oid THEN _timescaledb_functions.to_timestamp(dimsl.range_end)
++                    WHEN dim.column_type::oid = ANY (ARRAY['timestamp without time zone'::regtype, 'timestamp with time zone'::regtype, 'date'::regtype]::oid[]) THEN _timescaledb_functions.to_timestamp(dimsl.range_end)
+                     ELSE NULL::timestamp with time zone
+                 END AS range_end,
+                 CASE
+-                    WHEN dim.column_type::oid = 'timestamp without time zone'::regtype::oid OR dim.column_type::oid = 'timestamp with time zone'::regtype::oid OR dim.column_type::oid = 'date'::regtype::oid THEN NULL::bigint
++                    WHEN dim.column_type::oid = ANY (ARRAY['timestamp without time zone'::regtype, 'timestamp with time zone'::regtype, 'date'::regtype]::oid[]) THEN NULL::bigint
+                     ELSE dimsl.range_start
+                 END AS integer_range_start,
+                 CASE
+-                    WHEN dim.column_type::oid = 'timestamp without time zone'::regtype::oid OR dim.column_type::oid = 'timestamp with time zone'::regtype::oid OR dim.column_type::oid = 'date'::regtype::oid THEN NULL::bigint
++                    WHEN dim.column_type::oid = ANY (ARRAY['timestamp without time zone'::regtype, 'timestamp with time zone'::regtype, 'date'::regtype]::oid[]) THEN NULL::bigint
+                     ELSE dimsl.range_end
+                 END AS integer_range_end,
+                 CASE
+@@ -365,7 +379,7 @@
+         CASE
+             WHEN dim.interval_length IS NOT NULL THEN
+             CASE
+-                WHEN dim.column_type::oid = 'timestamp without time zone'::regtype::oid OR dim.column_type::oid = 'timestamp with time zone'::regtype::oid OR dim.column_type::oid = 'date'::regtype::oid THEN _timescaledb_functions.to_interval(dim.interval_length)
++                WHEN dim.column_type::oid = ANY (ARRAY['timestamp without time zone'::regtype, 'timestamp with time zone'::regtype, 'date'::regtype]::oid[]) THEN _timescaledb_functions.to_interval(dim.interval_length)
+                 ELSE NULL::interval
+             END
+             ELSE NULL::interval
+@@ -373,7 +387,7 @@
+         CASE
+             WHEN dim.interval_length IS NOT NULL THEN
+             CASE
+-                WHEN dim.column_type::oid = 'timestamp without time zone'::regtype::oid OR dim.column_type::oid = 'timestamp with time zone'::regtype::oid OR dim.column_type::oid = 'date'::regtype::oid THEN NULL::bigint
++                WHEN dim.column_type::oid = ANY (ARRAY['timestamp without time zone'::regtype, 'timestamp with time zone'::regtype, 'date'::regtype]::oid[]) THEN NULL::bigint
+                 ELSE dim.interval_length
+             END
+             ELSE NULL::bigint
+@@ -384,6 +398,34 @@
+     _timescaledb_catalog.dimension dim
+   WHERE dim.hypertable_id = ht.id;
+ timescaledb_information|
++hypertable_compression_settings|
++ SELECT format('%I.%I'::text, ht.schema_name, ht.table_name)::regclass AS hypertable,
++    array_to_string(s.segmentby, ','::text) AS segmentby,
++    un.orderby,
++    d.compress_interval_length
++   FROM _timescaledb_catalog.hypertable ht
++     JOIN LATERAL ( SELECT
++                CASE
++                    WHEN d_1.column_type::oid = ANY (ARRAY['timestamp without time zone'::regtype, 'timestamp with time zone'::regtype, 'date'::regtype]::oid[]) THEN _timescaledb_functions.to_interval(d_1.compress_interval_length)::text
++                    ELSE d_1.compress_interval_length::text
++                END AS compress_interval_length
++           FROM _timescaledb_catalog.dimension d_1
++          WHERE d_1.hypertable_id = ht.id
++          ORDER BY d_1.id
++         LIMIT 1) d ON true
++     LEFT JOIN _timescaledb_catalog.compression_settings s ON format('%I.%I'::text, ht.schema_name, ht.table_name)::regclass::oid = s.relid::oid
++     LEFT JOIN LATERAL ( SELECT string_agg(format('%I%s%s'::text, un_1.orderby,
++                CASE
++                    WHEN un_1."desc" THEN ' DESC'::text
++                    ELSE ''::text
++                END,
++                CASE
++                    WHEN un_1.nullsfirst AND NOT un_1."desc" THEN ' NULLS FIRST'::text
++                    WHEN NOT un_1.nullsfirst AND un_1."desc" THEN ' NULLS LAST'::text
++                    ELSE ''::text
++                END), ','::text) AS orderby
++           FROM UNNEST(s.orderby, s.orderby_desc, s.orderby_nullsfirst) un_1(orderby, "desc", nullsfirst)) un ON true;
++timescaledb_information|
+ hypertables|
+  SELECT ht.schema_name AS hypertable_schema,
+     ht.table_name AS hypertable_name,
+@@ -407,34 +449,69 @@
+   WHERE ht.compression_state <> 2 AND ca.mat_hypertable_id IS NULL;
+ timescaledb_information|
+ job_errors|
+- SELECT job_errors.job_id,
+-    job_errors.error_data ->> 'proc_schema'::text AS proc_schema,
+-    job_errors.error_data ->> 'proc_name'::text AS proc_name,
+-    job_errors.pid,
+-    job_errors.start_time,
+-    job_errors.finish_time,
+-    job_errors.error_data ->> 'sqlerrcode'::text AS sqlerrcode,
++ SELECT bgw_job_stat_history.job_id,
++    (bgw_job_stat_history.data -> 'job'::text) ->> 'proc_schema'::text AS proc_schema,
++    (bgw_job_stat_history.data -> 'job'::text) ->> 'proc_name'::text AS proc_name,
++    bgw_job_stat_history.pid,
++    bgw_job_stat_history.execution_start AS start_time,
++    bgw_job_stat_history.execution_finish AS finish_time,
++    (bgw_job_stat_history.data -> 'error_data'::text) ->> 'sqlerrcode'::text AS sqlerrcode,
+         CASE
+-            WHEN (job_errors.error_data ->> 'message'::text) IS NOT NULL THEN
++            WHEN ((bgw_job_stat_history.data -> 'error_data'::text) ->> 'message'::text) IS NOT NULL THEN
+             CASE
+-                WHEN (job_errors.error_data ->> 'detail'::text) IS NOT NULL THEN
++                WHEN ((bgw_job_stat_history.data -> 'error_data'::text) ->> 'detail'::text) IS NOT NULL THEN
+                 CASE
+-                    WHEN (job_errors.error_data ->> 'hint'::text) IS NOT NULL THEN concat(job_errors.error_data ->> 'message'::text, '. ', job_errors.error_data ->> 'detail'::text, '. ', job_errors.error_data ->> 'hint'::text)
+-                    ELSE concat(job_errors.error_data ->> 'message'::text, ' ', job_errors.error_data ->> 'detail'::text)
++                    WHEN ((bgw_job_stat_history.data -> 'error_data'::text) ->> 'hint'::text) IS NOT NULL THEN concat((bgw_job_stat_history.data -> 'error_data'::text) ->> 'message'::text, '. ', (bgw_job_stat_history.data -> 'error_data'::text) ->> 'detail'::text, '. ', (bgw_job_stat_history.data -> 'error_data'::text) ->> 'hint'::text)
++                    ELSE concat((bgw_job_stat_history.data -> 'error_data'::text) ->> 'message'::text, ' ', (bgw_job_stat_history.data -> 'error_data'::text) ->> 'detail'::text)
+                 END
+                 ELSE
+                 CASE
+-                    WHEN (job_errors.error_data ->> 'hint'::text) IS NOT NULL THEN concat(job_errors.error_data ->> 'message'::text, '. ', job_errors.error_data ->> 'hint'::text)
+-                    ELSE job_errors.error_data ->> 'message'::text
++                    WHEN ((bgw_job_stat_history.data -> 'error_data'::text) ->> 'hint'::text) IS NOT NULL THEN concat((bgw_job_stat_history.data -> 'error_data'::text) ->> 'message'::text, '. ', (bgw_job_stat_history.data -> 'error_data'::text) ->> 'hint'::text)
++                    ELSE (bgw_job_stat_history.data -> 'error_data'::text) ->> 'message'::text
+                 END
+             END
+             ELSE 'job crash detected, see server logs'::text
+         END AS err_message
+-   FROM _timescaledb_internal.job_errors
+-     LEFT JOIN _timescaledb_config.bgw_job ON bgw_job.id = job_errors.job_id
++   FROM _timescaledb_internal.bgw_job_stat_history
++     LEFT JOIN _timescaledb_config.bgw_job ON bgw_job.id = bgw_job_stat_history.job_id
++  WHERE bgw_job_stat_history.succeeded IS FALSE AND (pg_has_role(CURRENT_USER, ( SELECT pg_get_userbyid(pg_database.datdba) AS pg_get_userbyid
++           FROM pg_database
++          WHERE pg_database.datname = current_database()), 'MEMBER'::text) IS TRUE OR pg_has_role(CURRENT_USER, bgw_job.owner::oid, 'MEMBER'::text) IS TRUE);
++timescaledb_information|
++job_history|
++ SELECT h.id,
++    h.job_id,
++    h.succeeded,
++    COALESCE((h.data -> 'job'::text) ->> 'proc_schema'::text, j.proc_schema::text) AS proc_schema,
++    COALESCE((h.data -> 'job'::text) ->> 'proc_name'::text, j.proc_name::text) AS proc_name,
++    h.pid,
++    h.execution_start AS start_time,
++    h.execution_finish AS finish_time,
++    (h.data -> 'job'::text) -> 'config'::text AS config,
++    (h.data -> 'error_data'::text) ->> 'sqlerrcode'::text AS sqlerrcode,
++        CASE
++            WHEN h.succeeded IS FALSE AND ((h.data -> 'error_data'::text) ->> 'message'::text) IS NOT NULL THEN
++            CASE
++                WHEN ((h.data -> 'error_data'::text) ->> 'detail'::text) IS NOT NULL THEN
++                CASE
++                    WHEN ((h.data -> 'error_data'::text) ->> 'hint'::text) IS NOT NULL THEN concat((h.data -> 'error_data'::text) ->> 'message'::text, '. ', (h.data -> 'error_data'::text) ->> 'detail'::text, '. ', (h.data -> 'error_data'::text) ->> 'hint'::text)
++                    ELSE concat((h.data -> 'error_data'::text) ->> 'message'::text, ' ', (h.data -> 'error_data'::text) ->> 'detail'::text)
++                END
++                ELSE
++                CASE
++                    WHEN ((h.data -> 'error_data'::text) ->> 'hint'::text) IS NOT NULL THEN concat((h.data -> 'error_data'::text) ->> 'message'::text, '. ', (h.data -> 'error_data'::text) ->> 'hint'::text)
++                    ELSE (h.data -> 'error_data'::text) ->> 'message'::text
++                END
++            END
++            WHEN h.succeeded IS FALSE AND h.execution_finish IS NOT NULL THEN 'job crash detected, see server logs'::text
++            WHEN h.execution_finish IS NULL THEN 'job didn''t finish yet'::text
++            ELSE NULL::text
++        END AS err_message
++   FROM _timescaledb_internal.bgw_job_stat_history h
++     LEFT JOIN _timescaledb_config.bgw_job j ON j.id = h.job_id
+   WHERE pg_has_role(CURRENT_USER, ( SELECT pg_get_userbyid(pg_database.datdba) AS pg_get_userbyid
+            FROM pg_database
+-          WHERE pg_database.datname = current_database()), 'MEMBER'::text) IS TRUE OR pg_has_role(CURRENT_USER, bgw_job.owner::oid, 'MEMBER'::text) IS TRUE;
++          WHERE pg_database.datname = current_database()), 'MEMBER'::text) IS TRUE OR pg_has_role(CURRENT_USER, j.owner::oid, 'MEMBER'::text) IS TRUE;
+ timescaledb_information|
+ job_stats|
+  SELECT ht.schema_name AS hypertable_schema,
+@@ -519,6 +596,28 @@
+      JOIN _timescaledb_catalog.continuous_agg ca ON ((ca.mat_hypertable_id = j.hypertable_id)))
+      JOIN _timescaledb_catalog.hypertable ht ON ((ht.id = ca.mat_hypertable_id)));
+ timescaledb_information|
++chunk_compression_settings|
++postgres|
++ SELECT (format('%I.%I'::text, ht.schema_name, ht.table_name))::regclass AS hypertable,
++    (format('%I.%I'::text, ch.schema_name, ch.table_name))::regclass AS chunk,
++    array_to_string(s.segmentby, ','::text) AS segmentby,
++    un.orderby
++   FROM ((((_timescaledb_catalog.hypertable ht
++     JOIN _timescaledb_catalog.chunk ch ON ((ch.hypertable_id = ht.id)))
++     JOIN _timescaledb_catalog.chunk ch2 ON ((ch2.id = ch.compressed_chunk_id)))
++     LEFT JOIN _timescaledb_catalog.compression_settings s ON ((((format('%I.%I'::text, ch2.schema_name, ch2.table_name))::regclass)::oid = (s.relid)::oid)))
++     LEFT JOIN LATERAL ( SELECT string_agg(format('%I%s%s'::text, un_1.orderby,
++                CASE
++                    WHEN un_1."desc" THEN ' DESC'::text
++                    ELSE ''::text
++                END,
++                CASE
++                    WHEN (un_1.nullsfirst AND (NOT un_1."desc")) THEN ' NULLS FIRST'::text
++                    WHEN ((NOT un_1.nullsfirst) AND un_1."desc") THEN ' NULLS LAST'::text
++                    ELSE ''::text
++                END), ','::text) AS orderby
++           FROM UNNEST(s.orderby, s.orderby_desc, s.orderby_nullsfirst) un_1(orderby, "desc", nullsfirst)) un ON (true));
++timescaledb_information|
+ chunks|
+ postgres|
+  SELECT finalq.hypertable_schema,
+@@ -542,19 +641,19 @@
+             dim.column_type AS primary_dimension_type,
+             row_number() OVER (PARTITION BY chcons.chunk_id ORDER BY dim.id) AS chunk_dimension_num,
+                 CASE
+-                    WHEN (((dim.column_type)::oid = ('timestamp without time zone'::regtype)::oid) OR ((dim.column_type)::oid = ('timestamp with time zone'::regtype)::oid) OR ((dim.column_type)::oid = ('date'::regtype)::oid)) THEN _timescaledb_functions.to_timestamp(dimsl.range_start)
++                    WHEN ((dim.column_type)::oid = ANY ((ARRAY['timestamp without time zone'::regtype, 'timestamp with time zone'::regtype, 'date'::regtype])::oid[])) THEN _timescaledb_functions.to_timestamp(dimsl.range_start)
+                     ELSE NULL::timestamp with time zone
+                 END AS range_start,
+                 CASE
+-                    WHEN (((dim.column_type)::oid = ('timestamp without time zone'::regtype)::oid) OR ((dim.column_type)::oid = ('timestamp with time zone'::regtype)::oid) OR ((dim.column_type)::oid = ('date'::regtype)::oid)) THEN _timescaledb_functions.to_timestamp(dimsl.range_end)
++                    WHEN ((dim.column_type)::oid = ANY ((ARRAY['timestamp without time zone'::regtype, 'timestamp with time zone'::regtype, 'date'::regtype])::oid[])) THEN _timescaledb_functions.to_timestamp(dimsl.range_end)
+                     ELSE NULL::timestamp with time zone
+                 END AS range_end,
+                 CASE
+-                    WHEN (((dim.column_type)::oid = ('timestamp without time zone'::regtype)::oid) OR ((dim.column_type)::oid = ('timestamp with time zone'::regtype)::oid) OR ((dim.column_type)::oid = ('date'::regtype)::oid)) THEN NULL::bigint
++                    WHEN ((dim.column_type)::oid = ANY ((ARRAY['timestamp without time zone'::regtype, 'timestamp with time zone'::regtype, 'date'::regtype])::oid[])) THEN NULL::bigint
+                     ELSE dimsl.range_start
+                 END AS integer_range_start,
+                 CASE
+-                    WHEN (((dim.column_type)::oid = ('timestamp without time zone'::regtype)::oid) OR ((dim.column_type)::oid = ('timestamp with time zone'::regtype)::oid) OR ((dim.column_type)::oid = ('date'::regtype)::oid)) THEN NULL::bigint
++                    WHEN ((dim.column_type)::oid = ANY ((ARRAY['timestamp without time zone'::regtype, 'timestamp with time zone'::regtype, 'date'::regtype])::oid[])) THEN NULL::bigint
+                     ELSE dimsl.range_end
+                 END AS integer_range_end,
+                 CASE
+@@ -651,7 +750,7 @@
+         CASE
+             WHEN (dim.interval_length IS NOT NULL) THEN
+             CASE
+-                WHEN (((dim.column_type)::oid = ('timestamp without time zone'::regtype)::oid) OR ((dim.column_type)::oid = ('timestamp with time zone'::regtype)::oid) OR ((dim.column_type)::oid = ('date'::regtype)::oid)) THEN _timescaledb_functions.to_interval(dim.interval_length)
++                WHEN ((dim.column_type)::oid = ANY ((ARRAY['timestamp without time zone'::regtype, 'timestamp with time zone'::regtype, 'date'::regtype])::oid[])) THEN _timescaledb_functions.to_interval(dim.interval_length)
+                 ELSE NULL::interval
+             END
+             ELSE NULL::interval
+@@ -659,7 +758,7 @@
+         CASE
+             WHEN (dim.interval_length IS NOT NULL) THEN
+             CASE
+-                WHEN (((dim.column_type)::oid = ('timestamp without time zone'::regtype)::oid) OR ((dim.column_type)::oid = ('timestamp with time zone'::regtype)::oid) OR ((dim.column_type)::oid = ('date'::regtype)::oid)) THEN NULL::bigint
++                WHEN ((dim.column_type)::oid = ANY ((ARRAY['timestamp without time zone'::regtype, 'timestamp with time zone'::regtype, 'date'::regtype])::oid[])) THEN NULL::bigint
+                 ELSE dim.interval_length
+             END
+             ELSE NULL::bigint
+@@ -670,6 +769,35 @@
+     _timescaledb_catalog.dimension dim
+   WHERE (dim.hypertable_id = ht.id);
+ timescaledb_information|
++hypertable_compression_settings|
++postgres|
++ SELECT (format('%I.%I'::text, ht.schema_name, ht.table_name))::regclass AS hypertable,
++    array_to_string(s.segmentby, ','::text) AS segmentby,
++    un.orderby,
++    d.compress_interval_length
++   FROM (((_timescaledb_catalog.hypertable ht
++     JOIN LATERAL ( SELECT
++                CASE
++                    WHEN ((d_1.column_type)::oid = ANY ((ARRAY['timestamp without time zone'::regtype, 'timestamp with time zone'::regtype, 'date'::regtype])::oid[])) THEN (_timescaledb_functions.to_interval(d_1.compress_interval_length))::text
++                    ELSE (d_1.compress_interval_length)::text
++                END AS compress_interval_length
++           FROM _timescaledb_catalog.dimension d_1
++          WHERE (d_1.hypertable_id = ht.id)
++          ORDER BY d_1.id
++         LIMIT 1) d ON (true))
++     LEFT JOIN _timescaledb_catalog.compression_settings s ON ((((format('%I.%I'::text, ht.schema_name, ht.table_name))::regclass)::oid = (s.relid)::oid)))
++     LEFT JOIN LATERAL ( SELECT string_agg(format('%I%s%s'::text, un_1.orderby,
++                CASE
++                    WHEN un_1."desc" THEN ' DESC'::text
++                    ELSE ''::text
++                END,
++                CASE
++                    WHEN (un_1.nullsfirst AND (NOT un_1."desc")) THEN ' NULLS FIRST'::text
++                    WHEN ((NOT un_1.nullsfirst) AND un_1."desc") THEN ' NULLS LAST'::text
++                    ELSE ''::text
++                END), ','::text) AS orderby
++           FROM UNNEST(s.orderby, s.orderby_desc, s.orderby_nullsfirst) un_1(orderby, "desc", nullsfirst)) un ON (true));
++timescaledb_information|
+ hypertables|
+ postgres|
+  SELECT ht.schema_name AS hypertable_schema,
+@@ -695,34 +823,70 @@
+ timescaledb_information|
+ job_errors|
+ postgres|
+- SELECT job_errors.job_id,
+-    (job_errors.error_data ->> 'proc_schema'::text) AS proc_schema,
+-    (job_errors.error_data ->> 'proc_name'::text) AS proc_name,
+-    job_errors.pid,
+-    job_errors.start_time,
+-    job_errors.finish_time,
+-    (job_errors.error_data ->> 'sqlerrcode'::text) AS sqlerrcode,
++ SELECT bgw_job_stat_history.job_id,
++    ((bgw_job_stat_history.data -> 'job'::text) ->> 'proc_schema'::text) AS proc_schema,
++    ((bgw_job_stat_history.data -> 'job'::text) ->> 'proc_name'::text) AS proc_name,
++    bgw_job_stat_history.pid,
++    bgw_job_stat_history.execution_start AS start_time,
++    bgw_job_stat_history.execution_finish AS finish_time,
++    ((bgw_job_stat_history.data -> 'error_data'::text) ->> 'sqlerrcode'::text) AS sqlerrcode,
+         CASE
+-            WHEN ((job_errors.error_data ->> 'message'::text) IS NOT NULL) THEN
++            WHEN (((bgw_job_stat_history.data -> 'error_data'::text) ->> 'message'::text) IS NOT NULL) THEN
+             CASE
+-                WHEN ((job_errors.error_data ->> 'detail'::text) IS NOT NULL) THEN
++                WHEN (((bgw_job_stat_history.data -> 'error_data'::text) ->> 'detail'::text) IS NOT NULL) THEN
+                 CASE
+-                    WHEN ((job_errors.error_data ->> 'hint'::text) IS NOT NULL) THEN concat((job_errors.error_data ->> 'message'::text), '. ', (job_errors.error_data ->> 'detail'::text), '. ', (job_errors.error_data ->> 'hint'::text))
+-                    ELSE concat((job_errors.error_data ->> 'message'::text), ' ', (job_errors.error_data ->> 'detail'::text))
++                    WHEN (((bgw_job_stat_history.data -> 'error_data'::text) ->> 'hint'::text) IS NOT NULL) THEN concat(((bgw_job_stat_history.data -> 'error_data'::text) ->> 'message'::text), '. ', ((bgw_job_stat_history.data -> 'error_data'::text) ->> 'detail'::text), '. ', ((bgw_job_stat_history.data -> 'error_data'::text) ->> 'hint'::text))
++                    ELSE concat(((bgw_job_stat_history.data -> 'error_data'::text) ->> 'message'::text), ' ', ((bgw_job_stat_history.data -> 'error_data'::text) ->> 'detail'::text))
+                 END
+                 ELSE
+                 CASE
+-                    WHEN ((job_errors.error_data ->> 'hint'::text) IS NOT NULL) THEN concat((job_errors.error_data ->> 'message'::text), '. ', (job_errors.error_data ->> 'hint'::text))
+-                    ELSE (job_errors.error_data ->> 'message'::text)
++                    WHEN (((bgw_job_stat_history.data -> 'error_data'::text) ->> 'hint'::text) IS NOT NULL) THEN concat(((bgw_job_stat_history.data -> 'error_data'::text) ->> 'message'::text), '. ', ((bgw_job_stat_history.data -> 'error_data'::text) ->> 'hint'::text))
++                    ELSE ((bgw_job_stat_history.data -> 'error_data'::text) ->> 'message'::text)
+                 END
+             END
+             ELSE 'job crash detected, see server logs'::text
+         END AS err_message
+-   FROM (_timescaledb_internal.job_errors
+-     LEFT JOIN _timescaledb_config.bgw_job ON ((bgw_job.id = job_errors.job_id)))
++   FROM (_timescaledb_internal.bgw_job_stat_history
++     LEFT JOIN _timescaledb_config.bgw_job ON ((bgw_job.id = bgw_job_stat_history.job_id)))
++  WHERE ((bgw_job_stat_history.succeeded IS FALSE) AND ((pg_has_role(CURRENT_USER, ( SELECT pg_get_userbyid(pg_database.datdba) AS pg_get_userbyid
++           FROM pg_database
++          WHERE (pg_database.datname = current_database())), 'MEMBER'::text) IS TRUE) OR (pg_has_role(CURRENT_USER, (bgw_job.owner)::oid, 'MEMBER'::text) IS TRUE)));
++timescaledb_information|
++job_history|
++postgres|
++ SELECT h.id,
++    h.job_id,
++    h.succeeded,
++    COALESCE(((h.data -> 'job'::text) ->> 'proc_schema'::text), (j.proc_schema)::text) AS proc_schema,
++    COALESCE(((h.data -> 'job'::text) ->> 'proc_name'::text), (j.proc_name)::text) AS proc_name,
++    h.pid,
++    h.execution_start AS start_time,
++    h.execution_finish AS finish_time,
++    ((h.data -> 'job'::text) -> 'config'::text) AS config,
++    ((h.data -> 'error_data'::text) ->> 'sqlerrcode'::text) AS sqlerrcode,
++        CASE
++            WHEN ((h.succeeded IS FALSE) AND (((h.data -> 'error_data'::text) ->> 'message'::text) IS NOT NULL)) THEN
++            CASE
++                WHEN (((h.data -> 'error_data'::text) ->> 'detail'::text) IS NOT NULL) THEN
++                CASE
++                    WHEN (((h.data -> 'error_data'::text) ->> 'hint'::text) IS NOT NULL) THEN concat(((h.data -> 'error_data'::text) ->> 'message'::text), '. ', ((h.data -> 'error_data'::text) ->> 'detail'::text), '. ', ((h.data -> 'error_data'::text) ->> 'hint'::text))
++                    ELSE concat(((h.data -> 'error_data'::text) ->> 'message'::text), ' ', ((h.data -> 'error_data'::text) ->> 'detail'::text))
++                END
++                ELSE
++                CASE
++                    WHEN (((h.data -> 'error_data'::text) ->> 'hint'::text) IS NOT NULL) THEN concat(((h.data -> 'error_data'::text) ->> 'message'::text), '. ', ((h.data -> 'error_data'::text) ->> 'hint'::text))
++                    ELSE ((h.data -> 'error_data'::text) ->> 'message'::text)
++                END
++            END
++            WHEN ((h.succeeded IS FALSE) AND (h.execution_finish IS NOT NULL)) THEN 'job crash detected, see server logs'::text
++            WHEN (h.execution_finish IS NULL) THEN 'job didn''t finish yet'::text
++            ELSE NULL::text
++        END AS err_message
++   FROM (_timescaledb_internal.bgw_job_stat_history h
++     LEFT JOIN _timescaledb_config.bgw_job j ON ((j.id = h.job_id)))
+   WHERE ((pg_has_role(CURRENT_USER, ( SELECT pg_get_userbyid(pg_database.datdba) AS pg_get_userbyid
+            FROM pg_database
+-          WHERE (pg_database.datname = current_database())), 'MEMBER'::text) IS TRUE) OR (pg_has_role(CURRENT_USER, (bgw_job.owner)::oid, 'MEMBER'::text) IS TRUE));
++          WHERE (pg_database.datname = current_database())), 'MEMBER'::text) IS TRUE) OR (pg_has_role(CURRENT_USER, (j.owner)::oid, 'MEMBER'::text) IS TRUE));
+ timescaledb_information|
+ job_stats|
+ postgres|
+@@ -813,7 +977,7 @@
+ relid regclass, segmentby text[], orderby text[], orderby_desc boolean[], orderby_nullsfirst boolean[]
+ _timescaledb_catalog|
+ continuous_agg|
+-mat_hypertable_id integer, raw_hypertable_id integer, parent_mat_hypertable_id integer, user_view_schema name, user_view_name name, partial_view_schema name, partial_view_name name, bucket_width bigint, direct_view_schema name, direct_view_name name, materialized_only boolean, finalized boolean
++mat_hypertable_id integer, raw_hypertable_id integer, parent_mat_hypertable_id integer, user_view_schema name, user_view_name name, partial_view_schema name, partial_view_name name, direct_view_schema name, direct_view_name name, materialized_only boolean, finalized boolean
+ _timescaledb_catalog|
+ continuous_agg_migrate_plan|
+ mat_hypertable_id integer, start_ts timestamp with time zone, end_ts timestamp with time zone, user_view_definition text
+@@ -822,7 +986,7 @@
+ mat_hypertable_id integer, step_id integer, status text, start_ts timestamp with time zone, end_ts timestamp with time zone, type text, config jsonb
+ _timescaledb_catalog|
+ continuous_aggs_bucket_function|
+-mat_hypertable_id integer, experimental boolean, name text, bucket_width text, origin text, timezone text
++mat_hypertable_id integer, bucket_func regprocedure, bucket_width text, bucket_origin text, bucket_offset text, bucket_timezone text, bucket_fixed_width boolean
+ _timescaledb_catalog|
+ continuous_aggs_hypertable_invalidation_log|
+ hypertable_id integer, lowest_modified_value bigint, greatest_modified_value bigint
+@@ -857,11 +1021,11 @@
+ bgw_job_stat|
+ job_id integer, last_start timestamp with time zone, last_finish timestamp with time zone, next_start timestamp with time zone, last_successful_finish timestamp with time zone, last_run_success boolean, total_runs bigint, total_duration interval, total_duration_failures interval, total_successes bigint, total_failures bigint, total_crashes bigint, consecutive_failures integer, consecutive_crashes integer, flags integer
+ _timescaledb_internal|
++bgw_job_stat_history|
++id bigint, job_id integer, pid integer, execution_start timestamp with time zone, execution_finish timestamp with time zone, succeeded boolean, data jsonb
++_timescaledb_internal|
+ bgw_policy_chunk_stats|
+ job_id integer, chunk_id integer, num_times_job_run integer, last_time_job_run timestamp with time zone
+-_timescaledb_internal|
+-job_errors|
+-job_id integer, pid integer, start_time timestamp with time zone, finish_time timestamp with time zone, error_data jsonb
+ 
+ -- ================================================================================
+ -- TIMESCALEDB EXTENSION DETAILS
+@@ -871,6 +1035,6 @@
+ extrelocatable|
+ schema_name
+ timescaledb|
+-2.14.0|
++2.15.0|
+ f|
+ public

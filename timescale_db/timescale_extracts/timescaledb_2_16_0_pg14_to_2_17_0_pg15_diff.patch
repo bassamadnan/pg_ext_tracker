@@ -1,0 +1,53 @@
+--- timescale_extracts/timescaledb_2_16_0_pg14.out	2025-07-06 13:07:29.218387195 +0530
++++ timescale_extracts/timescaledb_2_17_0_pg15.out	2025-07-06 13:07:44.732608201 +0530
+@@ -1,12 +1,12 @@
+ -- PostgreSQL and TimescaleDB Version Information
+-                                                    version                                                    
+----------------------------------------------------------------------------------------------------------------
+- PostgreSQL 14.12 on x86_64-pc-linux-musl, compiled by gcc (Alpine 13.2.1_git20240309) 13.2.1 20240309, 64-bit
++                                                   version                                                    
++--------------------------------------------------------------------------------------------------------------
++ PostgreSQL 15.8 on x86_64-pc-linux-musl, compiled by gcc (Alpine 13.2.1_git20240309) 13.2.1 20240309, 64-bit
+ (1 row)
+ 
+    extname   | extversion 
+ -------------+------------
+- timescaledb | 2.16.0
++ timescaledb | 2.17.0
+ (1 row)
+ 
+ 
+@@ -121,8 +121,8 @@
+ public|chunk_compression_stats|hypertable regclass|record
+ public|chunks_detailed_size|hypertable regclass|record
+ public|compress_chunk|uncompressed_chunk regclass, if_not_compressed boolean DEFAULT true, recompress boolean DEFAULT false|regclass
+-public|create_hypertable|relation regclass, dimension _timescaledb_internal.dimension_info, create_default_indexes boolean DEFAULT true, if_not_exists boolean DEFAULT false, migrate_data boolean DEFAULT false|record
+ public|create_hypertable|relation regclass, time_column_name name, partitioning_column name DEFAULT NULL::name, number_partitions integer DEFAULT NULL::integer, associated_schema_name name DEFAULT NULL::name, associated_table_prefix name DEFAULT NULL::name, chunk_time_interval anyelement DEFAULT NULL::bigint, create_default_indexes boolean DEFAULT true, if_not_exists boolean DEFAULT false, partitioning_func regproc DEFAULT NULL::regproc, migrate_data boolean DEFAULT false, chunk_target_size text DEFAULT NULL::text, chunk_sizing_func regproc DEFAULT '_timescaledb_functions.calculate_chunk_interval'::regproc, time_partitioning_func regproc DEFAULT NULL::regproc|record
++public|create_hypertable|relation regclass, dimension _timescaledb_internal.dimension_info, create_default_indexes boolean DEFAULT true, if_not_exists boolean DEFAULT false, migrate_data boolean DEFAULT false|record
+ public|decompress_chunk|uncompressed_chunk regclass, if_compressed boolean DEFAULT true|regclass
+ public|delete_job|job_id integer|void
+ public|disable_chunk_skipping|hypertable regclass, column_name name, if_not_exists boolean DEFAULT false|record
+@@ -154,13 +154,13 @@
+ timescaledb_experimental|remove_policies|relation regclass, if_exists boolean DEFAULT false, VARIADIC policy_names text[] DEFAULT NULL::text[]|bool
+ timescaledb_experimental|show_policies|relation regclass|jsonb
+ timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp with time zone|timestamptz
++timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp without time zone|timestamp
+ timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp with time zone, origin timestamp with time zone|timestamptz
+ timescaledb_experimental|time_bucket_ng|bucket_width interval, ts date, origin date|date
+ timescaledb_experimental|time_bucket_ng|bucket_width interval, ts date|date
+ timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp without time zone, origin timestamp without time zone|timestamp
+-timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp without time zone|timestamp
+-timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp with time zone, origin timestamp with time zone, timezone text|timestamptz
+ timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp with time zone, timezone text|timestamptz
++timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp with time zone, origin timestamp with time zone, timezone text|timestamptz
+ 
+ -- ================================================================================
+ -- TIMESCALEDB VIEW DEFINITIONS
+@@ -1040,6 +1040,6 @@
+ extrelocatable|
+ schema_name
+ timescaledb|
+-2.16.0|
++2.17.0|
+ f|
+ public

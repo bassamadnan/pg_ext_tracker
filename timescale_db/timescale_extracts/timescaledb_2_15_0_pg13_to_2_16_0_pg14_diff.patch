@@ -1,0 +1,145 @@
+--- timescale_extracts/timescaledb_2_15_0_pg13.out	2025-07-06 13:07:13.699159313 +0530
++++ timescale_extracts/timescaledb_2_16_0_pg14.out	2025-07-06 13:07:29.218387195 +0530
+@@ -1,12 +1,12 @@
+ -- PostgreSQL and TimescaleDB Version Information
+-                                                      version                                                      
+--------------------------------------------------------------------------------------------------------------------
+- PostgreSQL 13.14 on x86_64-pc-linux-musl, compiled by gcc (Alpine 12.2.1_git20220924-r10) 12.2.1 20220924, 64-bit
++                                                    version                                                    
++---------------------------------------------------------------------------------------------------------------
++ PostgreSQL 14.12 on x86_64-pc-linux-musl, compiled by gcc (Alpine 13.2.1_git20240309) 13.2.1 20240309, 64-bit
+ (1 row)
+ 
+    extname   | extversion 
+ -------------+------------
+- timescaledb | 2.15.0
++ timescaledb | 2.16.0
+ (1 row)
+ 
+ 
+@@ -36,16 +36,16 @@
+ schema_name|function_name|function_args|return_type
+ _timescaledb_internal|alter_job_set_hypertable_id|job_id integer, hypertable regclass|int4
+ _timescaledb_internal|attach_osm_table_chunk|hypertable regclass, chunk regclass|bool
+-_timescaledb_internal|cagg_migrate_create_plan|_cagg_data _timescaledb_catalog.continuous_agg, _cagg_name_new text, _override boolean DEFAULT false, _drop_old boolean DEFAULT false|void
+-_timescaledb_internal|cagg_migrate_execute_copy_data|_cagg_data _timescaledb_catalog.continuous_agg, _plan_step _timescaledb_catalog.continuous_agg_migrate_plan_step|void
+-_timescaledb_internal|cagg_migrate_execute_copy_policies|_cagg_data _timescaledb_catalog.continuous_agg, _plan_step _timescaledb_catalog.continuous_agg_migrate_plan_step|void
+-_timescaledb_internal|cagg_migrate_execute_create_new_cagg|_cagg_data _timescaledb_catalog.continuous_agg, _plan_step _timescaledb_catalog.continuous_agg_migrate_plan_step|void
+-_timescaledb_internal|cagg_migrate_execute_disable_policies|_cagg_data _timescaledb_catalog.continuous_agg, _plan_step _timescaledb_catalog.continuous_agg_migrate_plan_step|void
+-_timescaledb_internal|cagg_migrate_execute_drop_old_cagg|_cagg_data _timescaledb_catalog.continuous_agg, _plan_step _timescaledb_catalog.continuous_agg_migrate_plan_step|void
+-_timescaledb_internal|cagg_migrate_execute_enable_policies|_cagg_data _timescaledb_catalog.continuous_agg, _plan_step _timescaledb_catalog.continuous_agg_migrate_plan_step|void
+-_timescaledb_internal|cagg_migrate_execute_override_cagg|_cagg_data _timescaledb_catalog.continuous_agg, _plan_step _timescaledb_catalog.continuous_agg_migrate_plan_step|void
+-_timescaledb_internal|cagg_migrate_execute_plan|_cagg_data _timescaledb_catalog.continuous_agg|void
+-_timescaledb_internal|cagg_migrate_execute_refresh_new_cagg|_cagg_data _timescaledb_catalog.continuous_agg, _plan_step _timescaledb_catalog.continuous_agg_migrate_plan_step|void
++_timescaledb_internal|cagg_migrate_create_plan|IN _cagg_data _timescaledb_catalog.continuous_agg, IN _cagg_name_new text, IN _override boolean DEFAULT false, IN _drop_old boolean DEFAULT false|void
++_timescaledb_internal|cagg_migrate_execute_copy_data|IN _cagg_data _timescaledb_catalog.continuous_agg, IN _plan_step _timescaledb_catalog.continuous_agg_migrate_plan_step|void
++_timescaledb_internal|cagg_migrate_execute_copy_policies|IN _cagg_data _timescaledb_catalog.continuous_agg, IN _plan_step _timescaledb_catalog.continuous_agg_migrate_plan_step|void
++_timescaledb_internal|cagg_migrate_execute_create_new_cagg|IN _cagg_data _timescaledb_catalog.continuous_agg, IN _plan_step _timescaledb_catalog.continuous_agg_migrate_plan_step|void
++_timescaledb_internal|cagg_migrate_execute_disable_policies|IN _cagg_data _timescaledb_catalog.continuous_agg, IN _plan_step _timescaledb_catalog.continuous_agg_migrate_plan_step|void
++_timescaledb_internal|cagg_migrate_execute_drop_old_cagg|IN _cagg_data _timescaledb_catalog.continuous_agg, IN _plan_step _timescaledb_catalog.continuous_agg_migrate_plan_step|void
++_timescaledb_internal|cagg_migrate_execute_enable_policies|IN _cagg_data _timescaledb_catalog.continuous_agg, IN _plan_step _timescaledb_catalog.continuous_agg_migrate_plan_step|void
++_timescaledb_internal|cagg_migrate_execute_override_cagg|IN _cagg_data _timescaledb_catalog.continuous_agg, IN _plan_step _timescaledb_catalog.continuous_agg_migrate_plan_step|void
++_timescaledb_internal|cagg_migrate_execute_plan|IN _cagg_data _timescaledb_catalog.continuous_agg|void
++_timescaledb_internal|cagg_migrate_execute_refresh_new_cagg|IN _cagg_data _timescaledb_catalog.continuous_agg, IN _plan_step _timescaledb_catalog.continuous_agg_migrate_plan_step|void
+ _timescaledb_internal|cagg_migrate_plan_exists|_hypertable_id integer|bool
+ _timescaledb_internal|cagg_migrate_pre_validation|_cagg_schema text, _cagg_name text, _cagg_name_new text|continuous_agg
+ _timescaledb_internal|cagg_watermark|hypertable_id integer|int8
+@@ -81,17 +81,17 @@
+ _timescaledb_internal|insert_blocker||trigger
+ _timescaledb_internal|interval_to_usec|chunk_interval interval|int8
+ _timescaledb_internal|partialize_agg|arg anyelement|bytea
+-_timescaledb_internal|policy_compression|job_id integer, config jsonb|void
++_timescaledb_internal|policy_compression|IN job_id integer, IN config jsonb|void
+ _timescaledb_internal|policy_compression_check|config jsonb|void
+-_timescaledb_internal|policy_compression_execute|job_id integer, htid integer, lag anyelement, maxchunks integer, verbose_log boolean, recompress_enabled boolean, use_creation_time boolean|void
++_timescaledb_internal|policy_compression_execute|IN job_id integer, IN htid integer, IN lag anyelement, IN maxchunks integer, IN verbose_log boolean, IN recompress_enabled boolean, IN use_creation_time boolean|void
+ _timescaledb_internal|policy_job_stat_history_retention|job_id integer, config jsonb|int4
+ _timescaledb_internal|policy_job_stat_history_retention_check|config jsonb|void
+-_timescaledb_internal|policy_recompression|job_id integer, config jsonb|void
+-_timescaledb_internal|policy_refresh_continuous_aggregate|job_id integer, config jsonb|void
++_timescaledb_internal|policy_recompression|IN job_id integer, IN config jsonb|void
++_timescaledb_internal|policy_refresh_continuous_aggregate|IN job_id integer, IN config jsonb|void
+ _timescaledb_internal|policy_refresh_continuous_aggregate_check|config jsonb|void
+-_timescaledb_internal|policy_reorder|job_id integer, config jsonb|void
++_timescaledb_internal|policy_reorder|IN job_id integer, IN config jsonb|void
+ _timescaledb_internal|policy_reorder_check|config jsonb|void
+-_timescaledb_internal|policy_retention|job_id integer, config jsonb|void
++_timescaledb_internal|policy_retention|IN job_id integer, IN config jsonb|void
+ _timescaledb_internal|policy_retention_check|config jsonb|void
+ _timescaledb_internal|process_ddl_event||event_trigger
+ _timescaledb_internal|range_value_to_pretty|time_value bigint, column_type regtype|text
+@@ -125,7 +125,9 @@
+ public|create_hypertable|relation regclass, time_column_name name, partitioning_column name DEFAULT NULL::name, number_partitions integer DEFAULT NULL::integer, associated_schema_name name DEFAULT NULL::name, associated_table_prefix name DEFAULT NULL::name, chunk_time_interval anyelement DEFAULT NULL::bigint, create_default_indexes boolean DEFAULT true, if_not_exists boolean DEFAULT false, partitioning_func regproc DEFAULT NULL::regproc, migrate_data boolean DEFAULT false, chunk_target_size text DEFAULT NULL::text, chunk_sizing_func regproc DEFAULT '_timescaledb_functions.calculate_chunk_interval'::regproc, time_partitioning_func regproc DEFAULT NULL::regproc|record
+ public|decompress_chunk|uncompressed_chunk regclass, if_compressed boolean DEFAULT true|regclass
+ public|delete_job|job_id integer|void
++public|disable_chunk_skipping|hypertable regclass, column_name name, if_not_exists boolean DEFAULT false|record
+ public|drop_chunks|relation regclass, older_than "any" DEFAULT NULL::unknown, newer_than "any" DEFAULT NULL::unknown, "verbose" boolean DEFAULT false, created_before "any" DEFAULT NULL::unknown, created_after "any" DEFAULT NULL::unknown|text
++public|enable_chunk_skipping|hypertable regclass, column_name name, if_not_exists boolean DEFAULT false|record
+ public|hypertable_approximate_detailed_size|relation regclass|record
+ public|hypertable_approximate_size|hypertable regclass|int8
+ public|hypertable_compression_stats|hypertable regclass|record
+@@ -133,14 +135,14 @@
+ public|hypertable_index_size|index_name regclass|int8
+ public|hypertable_size|hypertable regclass|int8
+ public|move_chunk|chunk regclass, destination_tablespace name, index_destination_tablespace name DEFAULT NULL::name, reorder_index regclass DEFAULT NULL::regclass, "verbose" boolean DEFAULT false|void
+-public|recompress_chunk|chunk regclass, if_not_compressed boolean DEFAULT true|void
+-public|refresh_continuous_aggregate|continuous_aggregate regclass, window_start "any", window_end "any"|void
++public|recompress_chunk|IN chunk regclass, IN if_not_compressed boolean DEFAULT true|void
++public|refresh_continuous_aggregate|IN continuous_aggregate regclass, IN window_start "any", IN window_end "any"|void
+ public|remove_compression_policy|hypertable regclass, if_exists boolean DEFAULT false|bool
+ public|remove_continuous_aggregate_policy|continuous_aggregate regclass, if_not_exists boolean DEFAULT false, if_exists boolean DEFAULT NULL::boolean|void
+ public|remove_reorder_policy|hypertable regclass, if_exists boolean DEFAULT false|void
+ public|remove_retention_policy|relation regclass, if_exists boolean DEFAULT false|void
+ public|reorder_chunk|chunk regclass, index regclass DEFAULT NULL::regclass, "verbose" boolean DEFAULT false|void
+-public|run_job|job_id integer|void
++public|run_job|IN job_id integer|void
+ public|set_adaptive_chunking|hypertable regclass, chunk_target_size text, INOUT chunk_sizing_func regproc DEFAULT '_timescaledb_functions.calculate_chunk_interval'::regproc, OUT chunk_target_size bigint|record
+ public|set_chunk_time_interval|hypertable regclass, chunk_time_interval anyelement, dimension_name name DEFAULT NULL::name|void
+ public|show_chunks|relation regclass, older_than "any" DEFAULT NULL::unknown, newer_than "any" DEFAULT NULL::unknown, created_before "any" DEFAULT NULL::unknown, created_after "any" DEFAULT NULL::unknown|regclass
+@@ -151,14 +153,14 @@
+ timescaledb_experimental|remove_all_policies|relation regclass, if_exists boolean DEFAULT false|bool
+ timescaledb_experimental|remove_policies|relation regclass, if_exists boolean DEFAULT false, VARIADIC policy_names text[] DEFAULT NULL::text[]|bool
+ timescaledb_experimental|show_policies|relation regclass|jsonb
+-timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp with time zone, origin timestamp with time zone|timestamptz
+ timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp with time zone|timestamptz
+-timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp with time zone, origin timestamp with time zone, timezone text|timestamptz
+-timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp with time zone, timezone text|timestamptz
+-timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp without time zone, origin timestamp without time zone|timestamp
+-timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp without time zone|timestamp
++timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp with time zone, origin timestamp with time zone|timestamptz
+ timescaledb_experimental|time_bucket_ng|bucket_width interval, ts date, origin date|date
+ timescaledb_experimental|time_bucket_ng|bucket_width interval, ts date|date
++timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp without time zone, origin timestamp without time zone|timestamp
++timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp without time zone|timestamp
++timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp with time zone, origin timestamp with time zone, timezone text|timestamptz
++timescaledb_experimental|time_bucket_ng|bucket_width interval, ts timestamp with time zone, timezone text|timestamptz
+ 
+ -- ================================================================================
+ -- TIMESCALEDB VIEW DEFINITIONS
+@@ -961,6 +963,9 @@
+ chunk|
+ id integer, hypertable_id integer, schema_name name, table_name name, compressed_chunk_id integer, dropped boolean, status integer, osm_chunk boolean, creation_time timestamp with time zone
+ _timescaledb_catalog|
++chunk_column_stats|
++id integer, hypertable_id integer, chunk_id integer, column_name name, range_start bigint, range_end bigint, valid boolean
++_timescaledb_catalog|
+ chunk_constraint|
+ chunk_id integer, dimension_slice_id integer, constraint_name name, hypertable_constraint_name name
+ _timescaledb_catalog|
+@@ -986,7 +991,7 @@
+ mat_hypertable_id integer, step_id integer, status text, start_ts timestamp with time zone, end_ts timestamp with time zone, type text, config jsonb
+ _timescaledb_catalog|
+ continuous_aggs_bucket_function|
+-mat_hypertable_id integer, bucket_func regprocedure, bucket_width text, bucket_origin text, bucket_offset text, bucket_timezone text, bucket_fixed_width boolean
++mat_hypertable_id integer, bucket_func text, bucket_width text, bucket_origin text, bucket_offset text, bucket_timezone text, bucket_fixed_width boolean
+ _timescaledb_catalog|
+ continuous_aggs_hypertable_invalidation_log|
+ hypertable_id integer, lowest_modified_value bigint, greatest_modified_value bigint
+@@ -1035,6 +1040,6 @@
+ extrelocatable|
+ schema_name
+ timescaledb|
+-2.15.0|
++2.16.0|
+ f|
+ public

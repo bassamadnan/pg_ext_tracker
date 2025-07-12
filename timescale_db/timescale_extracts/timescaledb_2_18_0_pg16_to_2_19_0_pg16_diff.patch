@@ -1,0 +1,208 @@
+--- timescale_extracts/timescaledb_2_18_0_pg16.out	2025-07-06 13:08:00.278823040 +0530
++++ timescale_extracts/timescaledb_2_19_0_pg16.out	2025-07-06 13:08:15.807031213 +0530
+@@ -1,12 +1,12 @@
+ -- PostgreSQL and TimescaleDB Version Information
+                                          version                                         
+ -----------------------------------------------------------------------------------------
+- PostgreSQL 16.6 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
++ PostgreSQL 16.8 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+ (1 row)
+ 
+    extname   | extversion 
+ -------------+------------
+- timescaledb | 2.18.0
++ timescaledb | 2.19.0
+ (1 row)
+ 
+ 
+@@ -114,7 +114,7 @@
+ _timescaledb_internal|unfreeze_chunk|chunk regclass|bool
+ public|add_columnstore_policy|IN hypertable regclass, IN after "any" DEFAULT NULL::unknown, IN if_not_exists boolean DEFAULT false, IN schedule_interval interval DEFAULT NULL::interval, IN initial_start timestamp with time zone DEFAULT NULL::timestamp with time zone, IN timezone text DEFAULT NULL::text, IN created_before interval DEFAULT NULL::interval, IN hypercore_use_access_method boolean DEFAULT NULL::boolean|void
+ public|add_compression_policy|hypertable regclass, compress_after "any" DEFAULT NULL::unknown, if_not_exists boolean DEFAULT false, schedule_interval interval DEFAULT NULL::interval, initial_start timestamp with time zone DEFAULT NULL::timestamp with time zone, timezone text DEFAULT NULL::text, compress_created_before interval DEFAULT NULL::interval, hypercore_use_access_method boolean DEFAULT NULL::boolean|int4
+-public|add_continuous_aggregate_policy|continuous_aggregate regclass, start_offset "any", end_offset "any", schedule_interval interval, if_not_exists boolean DEFAULT false, initial_start timestamp with time zone DEFAULT NULL::timestamp with time zone, timezone text DEFAULT NULL::text, include_tiered_data boolean DEFAULT NULL::boolean|int4
++public|add_continuous_aggregate_policy|continuous_aggregate regclass, start_offset "any", end_offset "any", schedule_interval interval, if_not_exists boolean DEFAULT false, initial_start timestamp with time zone DEFAULT NULL::timestamp with time zone, timezone text DEFAULT NULL::text, include_tiered_data boolean DEFAULT NULL::boolean, buckets_per_batch integer DEFAULT NULL::integer, max_batches_per_execution integer DEFAULT NULL::integer|int4
+ public|add_dimension|hypertable regclass, column_name name, number_partitions integer DEFAULT NULL::integer, chunk_time_interval anyelement DEFAULT NULL::bigint, partitioning_func regproc DEFAULT NULL::regproc, if_not_exists boolean DEFAULT false|record
+ public|add_dimension|hypertable regclass, dimension _timescaledb_internal.dimension_info, if_not_exists boolean DEFAULT false|record
+ public|add_job|proc regproc, schedule_interval interval, config jsonb DEFAULT NULL::jsonb, initial_start timestamp with time zone DEFAULT NULL::timestamp with time zone, scheduled boolean DEFAULT true, check_config regproc DEFAULT NULL::regproc, fixed_schedule boolean DEFAULT true, timezone text DEFAULT NULL::text|int4
+@@ -254,8 +254,7 @@
+     un.orderby
+    FROM _timescaledb_catalog.hypertable ht
+      JOIN _timescaledb_catalog.chunk ch ON ch.hypertable_id = ht.id
+-     JOIN _timescaledb_catalog.chunk ch2 ON ch2.id = ch.compressed_chunk_id
+-     LEFT JOIN _timescaledb_catalog.compression_settings s ON format('%I.%I'::text, ch2.schema_name, ch2.table_name)::regclass::oid = s.relid::oid
++     JOIN _timescaledb_catalog.compression_settings s ON format('%I.%I'::text, ch.schema_name, ch.table_name)::regclass::oid = s.relid::oid
+      LEFT JOIN LATERAL ( SELECT string_agg(format('%I%s%s'::text, un_1.orderby,
+                 CASE
+                     WHEN un_1."desc" THEN ' DESC'::text
+@@ -473,34 +472,35 @@
+   WHERE ht.compression_state <> 2 AND ca.mat_hypertable_id IS NULL;
+ timescaledb_information|
+ job_errors|
+- SELECT bgw_job_stat_history.job_id,
+-    (bgw_job_stat_history.data -> 'job'::text) ->> 'proc_schema'::text AS proc_schema,
+-    (bgw_job_stat_history.data -> 'job'::text) ->> 'proc_name'::text AS proc_name,
+-    bgw_job_stat_history.pid,
+-    bgw_job_stat_history.execution_start AS start_time,
+-    bgw_job_stat_history.execution_finish AS finish_time,
+-    (bgw_job_stat_history.data -> 'error_data'::text) ->> 'sqlerrcode'::text AS sqlerrcode,
++ SELECT h.job_id,
++    (h.data -> 'job'::text) ->> 'proc_schema'::text AS proc_schema,
++    (h.data -> 'job'::text) ->> 'proc_name'::text AS proc_name,
++    h.pid,
++    h.execution_start AS start_time,
++    h.execution_finish AS finish_time,
++    (h.data -> 'error_data'::text) ->> 'sqlerrcode'::text AS sqlerrcode,
+         CASE
+-            WHEN ((bgw_job_stat_history.data -> 'error_data'::text) ->> 'message'::text) IS NOT NULL THEN
++            WHEN h.succeeded IS NULL AND h.execution_finish IS NULL AND h.pid IS NULL THEN 'job crash detected, see server logs'::text
++            WHEN ((h.data -> 'error_data'::text) ->> 'message'::text) IS NOT NULL THEN
+             CASE
+-                WHEN ((bgw_job_stat_history.data -> 'error_data'::text) ->> 'detail'::text) IS NOT NULL THEN
++                WHEN ((h.data -> 'error_data'::text) ->> 'detail'::text) IS NOT NULL THEN
+                 CASE
+-                    WHEN ((bgw_job_stat_history.data -> 'error_data'::text) ->> 'hint'::text) IS NOT NULL THEN concat((bgw_job_stat_history.data -> 'error_data'::text) ->> 'message'::text, '. ', (bgw_job_stat_history.data -> 'error_data'::text) ->> 'detail'::text, '. ', (bgw_job_stat_history.data -> 'error_data'::text) ->> 'hint'::text)
+-                    ELSE concat((bgw_job_stat_history.data -> 'error_data'::text) ->> 'message'::text, ' ', (bgw_job_stat_history.data -> 'error_data'::text) ->> 'detail'::text)
++                    WHEN ((h.data -> 'error_data'::text) ->> 'hint'::text) IS NOT NULL THEN concat((h.data -> 'error_data'::text) ->> 'message'::text, '. ', (h.data -> 'error_data'::text) ->> 'detail'::text, '. ', (h.data -> 'error_data'::text) ->> 'hint'::text)
++                    ELSE concat((h.data -> 'error_data'::text) ->> 'message'::text, ' ', (h.data -> 'error_data'::text) ->> 'detail'::text)
+                 END
+                 ELSE
+                 CASE
+-                    WHEN ((bgw_job_stat_history.data -> 'error_data'::text) ->> 'hint'::text) IS NOT NULL THEN concat((bgw_job_stat_history.data -> 'error_data'::text) ->> 'message'::text, '. ', (bgw_job_stat_history.data -> 'error_data'::text) ->> 'hint'::text)
+-                    ELSE (bgw_job_stat_history.data -> 'error_data'::text) ->> 'message'::text
++                    WHEN ((h.data -> 'error_data'::text) ->> 'hint'::text) IS NOT NULL THEN concat((h.data -> 'error_data'::text) ->> 'message'::text, '. ', (h.data -> 'error_data'::text) ->> 'hint'::text)
++                    ELSE (h.data -> 'error_data'::text) ->> 'message'::text
+                 END
+             END
+-            ELSE 'job crash detected, see server logs'::text
++            ELSE NULL::text
+         END AS err_message
+-   FROM _timescaledb_internal.bgw_job_stat_history
+-     LEFT JOIN _timescaledb_config.bgw_job ON bgw_job.id = bgw_job_stat_history.job_id
+-  WHERE bgw_job_stat_history.succeeded IS FALSE AND (pg_has_role(CURRENT_USER, ( SELECT pg_get_userbyid(pg_database.datdba) AS pg_get_userbyid
++   FROM _timescaledb_internal.bgw_job_stat_history h
++     LEFT JOIN _timescaledb_config.bgw_job j ON j.id = h.job_id
++  WHERE h.succeeded IS FALSE OR h.succeeded IS NULL AND (pg_has_role(CURRENT_USER, ( SELECT pg_get_userbyid(pg_database.datdba) AS pg_get_userbyid
+            FROM pg_database
+-          WHERE pg_database.datname = current_database()), 'MEMBER'::text) IS TRUE OR pg_has_role(CURRENT_USER, bgw_job.owner::oid, 'MEMBER'::text) IS TRUE);
++          WHERE pg_database.datname = current_database()), 'MEMBER'::text) IS TRUE OR pg_has_role(CURRENT_USER, j.owner::oid, 'MEMBER'::text) IS TRUE);
+ timescaledb_information|
+ job_history|
+  SELECT h.id,
+@@ -514,6 +514,7 @@
+     (h.data -> 'job'::text) -> 'config'::text AS config,
+     (h.data -> 'error_data'::text) ->> 'sqlerrcode'::text AS sqlerrcode,
+         CASE
++            WHEN h.succeeded IS NULL AND h.execution_finish IS NULL AND h.pid IS NULL THEN 'job crash detected, see server logs'::text
+             WHEN h.succeeded IS FALSE AND ((h.data -> 'error_data'::text) ->> 'message'::text) IS NOT NULL THEN
+             CASE
+                 WHEN ((h.data -> 'error_data'::text) ->> 'detail'::text) IS NOT NULL THEN
+@@ -527,8 +528,6 @@
+                     ELSE (h.data -> 'error_data'::text) ->> 'message'::text
+                 END
+             END
+-            WHEN h.succeeded IS FALSE AND h.execution_finish IS NOT NULL THEN 'job crash detected, see server logs'::text
+-            WHEN h.execution_finish IS NULL THEN 'job didn''t finish yet'::text
+             ELSE NULL::text
+         END AS err_message
+    FROM _timescaledb_internal.bgw_job_stat_history h
+@@ -634,10 +633,9 @@
+     (format('%I.%I'::text, ch.schema_name, ch.table_name))::regclass AS chunk,
+     array_to_string(s.segmentby, ','::text) AS segmentby,
+     un.orderby
+-   FROM ((((_timescaledb_catalog.hypertable ht
++   FROM (((_timescaledb_catalog.hypertable ht
+      JOIN _timescaledb_catalog.chunk ch ON ((ch.hypertable_id = ht.id)))
+-     JOIN _timescaledb_catalog.chunk ch2 ON ((ch2.id = ch.compressed_chunk_id)))
+-     LEFT JOIN _timescaledb_catalog.compression_settings s ON ((((format('%I.%I'::text, ch2.schema_name, ch2.table_name))::regclass)::oid = (s.relid)::oid)))
++     JOIN _timescaledb_catalog.compression_settings s ON ((((format('%I.%I'::text, ch.schema_name, ch.table_name))::regclass)::oid = (s.relid)::oid)))
+      LEFT JOIN LATERAL ( SELECT string_agg(format('%I%s%s'::text, un_1.orderby,
+                 CASE
+                     WHEN un_1."desc" THEN ' DESC'::text
+@@ -863,34 +861,35 @@
+ timescaledb_information|
+ job_errors|
+ postgres|
+- SELECT bgw_job_stat_history.job_id,
+-    ((bgw_job_stat_history.data -> 'job'::text) ->> 'proc_schema'::text) AS proc_schema,
+-    ((bgw_job_stat_history.data -> 'job'::text) ->> 'proc_name'::text) AS proc_name,
+-    bgw_job_stat_history.pid,
+-    bgw_job_stat_history.execution_start AS start_time,
+-    bgw_job_stat_history.execution_finish AS finish_time,
+-    ((bgw_job_stat_history.data -> 'error_data'::text) ->> 'sqlerrcode'::text) AS sqlerrcode,
++ SELECT h.job_id,
++    ((h.data -> 'job'::text) ->> 'proc_schema'::text) AS proc_schema,
++    ((h.data -> 'job'::text) ->> 'proc_name'::text) AS proc_name,
++    h.pid,
++    h.execution_start AS start_time,
++    h.execution_finish AS finish_time,
++    ((h.data -> 'error_data'::text) ->> 'sqlerrcode'::text) AS sqlerrcode,
+         CASE
+-            WHEN (((bgw_job_stat_history.data -> 'error_data'::text) ->> 'message'::text) IS NOT NULL) THEN
++            WHEN ((h.succeeded IS NULL) AND (h.execution_finish IS NULL) AND (h.pid IS NULL)) THEN 'job crash detected, see server logs'::text
++            WHEN (((h.data -> 'error_data'::text) ->> 'message'::text) IS NOT NULL) THEN
+             CASE
+-                WHEN (((bgw_job_stat_history.data -> 'error_data'::text) ->> 'detail'::text) IS NOT NULL) THEN
++                WHEN (((h.data -> 'error_data'::text) ->> 'detail'::text) IS NOT NULL) THEN
+                 CASE
+-                    WHEN (((bgw_job_stat_history.data -> 'error_data'::text) ->> 'hint'::text) IS NOT NULL) THEN concat(((bgw_job_stat_history.data -> 'error_data'::text) ->> 'message'::text), '. ', ((bgw_job_stat_history.data -> 'error_data'::text) ->> 'detail'::text), '. ', ((bgw_job_stat_history.data -> 'error_data'::text) ->> 'hint'::text))
+-                    ELSE concat(((bgw_job_stat_history.data -> 'error_data'::text) ->> 'message'::text), ' ', ((bgw_job_stat_history.data -> 'error_data'::text) ->> 'detail'::text))
++                    WHEN (((h.data -> 'error_data'::text) ->> 'hint'::text) IS NOT NULL) THEN concat(((h.data -> 'error_data'::text) ->> 'message'::text), '. ', ((h.data -> 'error_data'::text) ->> 'detail'::text), '. ', ((h.data -> 'error_data'::text) ->> 'hint'::text))
++                    ELSE concat(((h.data -> 'error_data'::text) ->> 'message'::text), ' ', ((h.data -> 'error_data'::text) ->> 'detail'::text))
+                 END
+                 ELSE
+                 CASE
+-                    WHEN (((bgw_job_stat_history.data -> 'error_data'::text) ->> 'hint'::text) IS NOT NULL) THEN concat(((bgw_job_stat_history.data -> 'error_data'::text) ->> 'message'::text), '. ', ((bgw_job_stat_history.data -> 'error_data'::text) ->> 'hint'::text))
+-                    ELSE ((bgw_job_stat_history.data -> 'error_data'::text) ->> 'message'::text)
++                    WHEN (((h.data -> 'error_data'::text) ->> 'hint'::text) IS NOT NULL) THEN concat(((h.data -> 'error_data'::text) ->> 'message'::text), '. ', ((h.data -> 'error_data'::text) ->> 'hint'::text))
++                    ELSE ((h.data -> 'error_data'::text) ->> 'message'::text)
+                 END
+             END
+-            ELSE 'job crash detected, see server logs'::text
++            ELSE NULL::text
+         END AS err_message
+-   FROM (_timescaledb_internal.bgw_job_stat_history
+-     LEFT JOIN _timescaledb_config.bgw_job ON ((bgw_job.id = bgw_job_stat_history.job_id)))
+-  WHERE ((bgw_job_stat_history.succeeded IS FALSE) AND ((pg_has_role(CURRENT_USER, ( SELECT pg_get_userbyid(pg_database.datdba) AS pg_get_userbyid
++   FROM (_timescaledb_internal.bgw_job_stat_history h
++     LEFT JOIN _timescaledb_config.bgw_job j ON ((j.id = h.job_id)))
++  WHERE ((h.succeeded IS FALSE) OR ((h.succeeded IS NULL) AND ((pg_has_role(CURRENT_USER, ( SELECT pg_get_userbyid(pg_database.datdba) AS pg_get_userbyid
+            FROM pg_database
+-          WHERE (pg_database.datname = current_database())), 'MEMBER'::text) IS TRUE) OR (pg_has_role(CURRENT_USER, (bgw_job.owner)::oid, 'MEMBER'::text) IS TRUE)));
++          WHERE (pg_database.datname = current_database())), 'MEMBER'::text) IS TRUE) OR (pg_has_role(CURRENT_USER, (j.owner)::oid, 'MEMBER'::text) IS TRUE))));
+ timescaledb_information|
+ job_history|
+ postgres|
+@@ -905,6 +904,7 @@
+     ((h.data -> 'job'::text) -> 'config'::text) AS config,
+     ((h.data -> 'error_data'::text) ->> 'sqlerrcode'::text) AS sqlerrcode,
+         CASE
++            WHEN ((h.succeeded IS NULL) AND (h.execution_finish IS NULL) AND (h.pid IS NULL)) THEN 'job crash detected, see server logs'::text
+             WHEN ((h.succeeded IS FALSE) AND (((h.data -> 'error_data'::text) ->> 'message'::text) IS NOT NULL)) THEN
+             CASE
+                 WHEN (((h.data -> 'error_data'::text) ->> 'detail'::text) IS NOT NULL) THEN
+@@ -918,8 +918,6 @@
+                     ELSE ((h.data -> 'error_data'::text) ->> 'message'::text)
+                 END
+             END
+-            WHEN ((h.succeeded IS FALSE) AND (h.execution_finish IS NOT NULL)) THEN 'job crash detected, see server logs'::text
+-            WHEN (h.execution_finish IS NULL) THEN 'job didn''t finish yet'::text
+             ELSE NULL::text
+         END AS err_message
+    FROM (_timescaledb_internal.bgw_job_stat_history h
+@@ -1017,7 +1015,7 @@
+ chunk_id integer, compressed_chunk_id integer, uncompressed_heap_size bigint, uncompressed_toast_size bigint, uncompressed_index_size bigint, compressed_heap_size bigint, compressed_toast_size bigint, compressed_index_size bigint, numrows_pre_compression bigint, numrows_post_compression bigint, numrows_frozen_immediately bigint
+ _timescaledb_catalog|
+ compression_settings|
+-relid regclass, segmentby text[], orderby text[], orderby_desc boolean[], orderby_nullsfirst boolean[]
++relid regclass, compress_relid regclass, segmentby text[], orderby text[], orderby_desc boolean[], orderby_nullsfirst boolean[]
+ _timescaledb_catalog|
+ continuous_agg|
+ mat_hypertable_id integer, raw_hypertable_id integer, parent_mat_hypertable_id integer, user_view_schema name, user_view_name name, partial_view_schema name, partial_view_name name, direct_view_schema name, direct_view_name name, materialized_only boolean, finalized boolean
+@@ -1078,6 +1076,6 @@
+ extrelocatable|
+ schema_name
+ timescaledb|
+-2.18.0|
++2.19.0|
+ f|
+ public

@@ -1,0 +1,31 @@
+-- ================================================================================
+-- VERSION-SPECIFIC FEATURE TESTS
+-- ================================================================================
+TEST 1: Distributed Features (Pre-2.14.0)
+Testing if distributed hypertable features are available...
+psql:/tmp/version_specific_tests.sql:21: NOTICE:  SKIP: Distributed features not available (expected in 2.14.0+)
+DO
+TEST 2: Chunk Creation Time (2.13.0+)
+Testing if chunk_creation_time is available...
+psql:/tmp/version_specific_tests.sql:39: NOTICE:  PASS: Chunk creation time available
+DO
+TEST 3: Job History (2.15.0+)
+Testing if job_history view is available...
+psql:/tmp/version_specific_tests.sql:56: NOTICE:  PASS: Job history available
+DO
+TEST 4: Data Nodes (Pre-2.14.0)
+Testing if data_nodes view is available...
+psql:/tmp/version_specific_tests.sql:73: NOTICE:  SKIP: Data nodes not available (expected in 2.14.0+)
+DO
+TEST 5: Columnstore Settings (2.18.0+)
+Testing if columnstore settings are available...
+psql:/tmp/version_specific_tests.sql:90: NOTICE:  SKIP: Columnstore settings not available (expected in pre-2.18.0)
+DO
+TEST 6: Primary Dimension Info (2.20.0+)
+Testing if primary_dimension info is available...
+psql:/tmp/version_specific_tests.sql:108: NOTICE:  SKIP: Primary dimension info not available (expected in pre-2.20.0)
+DO
+TEST 7: SQL Error Codes in Job Errors (2.15.0+)
+Testing if sqlerrcode is available in job_errors...
+psql:/tmp/version_specific_tests.sql:125: NOTICE:  PASS: SQL error codes available in job_errors
+DO

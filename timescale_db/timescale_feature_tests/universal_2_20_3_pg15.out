@@ -1,0 +1,65 @@
+-- ================================================================================
+-- UNIVERSAL COMPATIBILITY TEST
+-- ================================================================================
+TimescaleDB Extension Information:
+   extname   | extversion | extrelocatable | schema_name 
+-------------+------------+----------------+-------------
+ timescaledb | 2.20.3     | f              | public
+(1 row)
+
+Available TimescaleDB Information Views:
+       schemaname        |            viewname             
+-------------------------+---------------------------------
+ timescaledb_information | chunk_columnstore_settings
+ timescaledb_information | chunk_compression_settings
+ timescaledb_information | chunks
+ timescaledb_information | compression_settings
+ timescaledb_information | continuous_aggregates
+ timescaledb_information | dimensions
+ timescaledb_information | hypertable_columnstore_settings
+ timescaledb_information | hypertable_compression_settings
+ timescaledb_information | hypertables
+ timescaledb_information | job_errors
+ timescaledb_information | job_history
+ timescaledb_information | job_stats
+ timescaledb_information | jobs
+(13 rows)
+
+Basic Hypertable Count:
+ total_hypertables 
+-------------------
+                 0
+(1 row)
+
+Basic Job Count:
+ total_jobs 
+------------
+          2
+(1 row)
+
+Version-specific view availability:
+            view_name            | available 
+---------------------------------+-----------
+ job_history                     | t
+ data_nodes                      | f
+ hypertable_columnstore_settings | t
+(3 rows)
+
+Chunk creation time availability:
+ chunk_creation_time_available 
+-------------------------------
+ t
+(1 row)
+
+Primary dimension info availability:
+ primary_dimension_available 
+-----------------------------
+ t
+(1 row)
+
+Distributed features availability:
+ distributed_features_available 
+--------------------------------
+ f
+(1 row)
+
