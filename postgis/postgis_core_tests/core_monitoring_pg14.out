@@ -1,0 +1,78 @@
+-- ================================================================================
+-- POSTGIS CORE MONITORING COMPATIBILITY TEST
+-- ================================================================================
+PostGIS Core Extension Information:
+ extname | extversion | extrelocatable | schema_name 
+---------+------------+----------------+-------------
+ postgis | 3.4.3      | f              | public
+(1 row)
+
+PostGIS Version Details:
+            postgis_version            
+---------------------------------------
+ 3.4 USE_GEOS=1 USE_PROJ=1 USE_STATS=1
+(1 row)
+
+ postgis_lib_version 
+---------------------
+ 3.4.3
+(1 row)
+
+-- ================================================================================
+-- SPATIAL TABLE MONITORING QUERIES
+-- ================================================================================
+Tables with Geometry Columns:
+ tables_with_geometry 
+----------------------
+                   12
+(1 row)
+
+Tables with Geography Columns:
+ tables_with_geography 
+-----------------------
+                     0
+(1 row)
+
+Spatial Reference Systems Count:
+ total_srs 
+-----------
+      8500
+(1 row)
+
+Most Common SRIDs in Geometry Columns:
+ srid | usage_count 
+------+-------------
+ 4269 |          12
+(1 row)
+
+-- ================================================================================
+-- POSTGIS PERFORMANCE MONITORING QUERIES
+-- ================================================================================
+Geometry Column Details:
+ f_table_schema | f_table_name | f_geometry_column | coord_dimension | srid |  geometry_type  
+----------------+--------------+-------------------+-----------------+------+-----------------
+ tiger          | addrfeat     | the_geom          |               2 | 4269 | LINESTRING
+ tiger          | bg           | the_geom          |               2 | 4269 | MULTIPOLYGON
+ tiger          | county       | the_geom          |               2 | 4269 | MULTIPOLYGON
+ tiger          | cousub       | the_geom          |               2 | 4269 | MULTIPOLYGON
+ tiger          | edges        | the_geom          |               2 | 4269 | MULTILINESTRING
+ tiger          | faces        | the_geom          |               2 | 4269 | MULTIPOLYGON
+ tiger          | place        | the_geom          |               2 | 4269 | MULTIPOLYGON
+ tiger          | state        | the_geom          |               2 | 4269 | MULTIPOLYGON
+ tiger          | tabblock     | the_geom          |               2 | 4269 | MULTIPOLYGON
+ tiger          | tabblock20   | the_geom          |               2 | 4269 | MULTIPOLYGON
+ tiger          | tract        | the_geom          |               2 | 4269 | MULTIPOLYGON
+ tiger          | zcta5        | the_geom          |               2 | 4269 | MULTIPOLYGON
+(12 rows)
+
+Spatial Indexes Check:
+ schemaname | tablename | indexname | indexdef 
+------------+-----------+-----------+----------
+(0 rows)
+
+Spatial Index Count:
+ spatial_index_count 
+---------------------
+                   0
+(1 row)
+

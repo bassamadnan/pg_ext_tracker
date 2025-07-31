@@ -1,0 +1,197 @@
+-- PostgreSQL and PostGIS Version Information
+                                                           version                                                           
+-----------------------------------------------------------------------------------------------------------------------------
+ PostgreSQL 17.0 (Debian 17.0-1.pgdg110+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit
+(1 row)
+
+           name           | default_version | installed_version 
+--------------------------+-----------------+-------------------
+ postgis                  | 3.4.3           | 3.4.3
+ postgis-3                | 3.4.3           | 
+ postgis_raster           | 3.4.3           | 
+ postgis_raster-3         | 3.4.3           | 
+ postgis_sfcgal           | 3.4.3           | 
+ postgis_sfcgal-3         | 3.4.3           | 
+ postgis_tiger_geocoder   | 3.4.3           | 3.4.3
+ postgis_tiger_geocoder-3 | 3.4.3           | 
+ postgis_topology         | 3.4.3           | 3.4.3
+ postgis_topology-3       | 3.4.3           | 
+(10 rows)
+
+
+CREATE EXTENSION
+CREATE EXTENSION
+CREATE EXTENSION
+Output format is unaligned.
+-- ================================================================================
+-- POSTGIS VIEW COLUMN INFORMATION
+-- ================================================================================
+schema_name|view_name|columns
+public|geography_columns|f_table_catalog, f_table_schema, f_table_name, f_geography_column, coord_dimension, srid, type
+public|geometry_columns|f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type
+public|raster_columns|r_table_catalog, r_table_schema, r_table_name, r_raster_column, srid, scale_x, scale_y, blocksize_x, blocksize_y, same_alignment, regular_blocking, num_bands, pixel_types, nodata_values, out_db, extent, spatial_index
+public|raster_overviews|o_table_catalog, o_table_schema, o_table_name, o_raster_column, r_table_catalog, r_table_schema, r_table_name, r_raster_column, overview_factor
+
+-- ================================================================================
+-- POSTGIS FUNCTION INFORMATION
+-- ================================================================================
+schema_name|function_name|function_args|return_type
+public|_add_raster_constraint|cn name, sql text|bool
+public|_add_raster_constraint_alignment|rastschema name, rasttable name, rastcolumn name|bool
+public|_add_raster_constraint_blocksize|rastschema name, rasttable name, rastcolumn name, axis text|bool
+public|_add_raster_constraint_coverage_tile|rastschema name, rasttable name, rastcolumn name|bool
+public|_add_raster_constraint_extent|rastschema name, rasttable name, rastcolumn name|bool
+public|_add_raster_constraint_nodata_values|rastschema name, rasttable name, rastcolumn name|bool
+public|_add_raster_constraint_num_bands|rastschema name, rasttable name, rastcolumn name|bool
+public|_add_raster_constraint_out_db|rastschema name, rasttable name, rastcolumn name|bool
+public|_add_raster_constraint_pixel_types|rastschema name, rasttable name, rastcolumn name|bool
+public|_add_raster_constraint_scale|rastschema name, rasttable name, rastcolumn name, axis character|bool
+public|_add_raster_constraint_spatially_unique|rastschema name, rasttable name, rastcolumn name|bool
+public|_add_raster_constraint_srid|rastschema name, rasttable name, rastcolumn name|bool
+public|_drop_raster_constraint|rastschema name, rasttable name, cn name|bool
+public|_drop_raster_constraint_alignment|rastschema name, rasttable name, rastcolumn name|bool
+public|_drop_raster_constraint_blocksize|rastschema name, rasttable name, rastcolumn name, axis text|bool
+public|_drop_raster_constraint_coverage_tile|rastschema name, rasttable name, rastcolumn name|bool
+public|_drop_raster_constraint_extent|rastschema name, rasttable name, rastcolumn name|bool
+public|_drop_raster_constraint_nodata_values|rastschema name, rasttable name, rastcolumn name|bool
+public|_drop_raster_constraint_num_bands|rastschema name, rasttable name, rastcolumn name|bool
+public|_drop_raster_constraint_out_db|rastschema name, rasttable name, rastcolumn name|bool
+public|_drop_raster_constraint_pixel_types|rastschema name, rasttable name, rastcolumn name|bool
+public|_drop_raster_constraint_regular_blocking|rastschema name, rasttable name, rastcolumn name|bool
+public|_drop_raster_constraint_scale|rastschema name, rasttable name, rastcolumn name, axis character|bool
+public|_drop_raster_constraint_spatially_unique|rastschema name, rasttable name, rastcolumn name|bool
+public|_drop_raster_constraint_srid|rastschema name, rasttable name, rastcolumn name|bool
+public|_raster_constraint_info_alignment|rastschema name, rasttable name, rastcolumn name|bool
+public|_raster_constraint_info_blocksize|rastschema name, rasttable name, rastcolumn name, axis text|int4
+public|_raster_constraint_info_coverage_tile|rastschema name, rasttable name, rastcolumn name|bool
+public|_raster_constraint_info_extent|rastschema name, rasttable name, rastcolumn name|geometry
+public|_raster_constraint_info_index|rastschema name, rasttable name, rastcolumn name|bool
+public|_raster_constraint_info_nodata_values|rastschema name, rasttable name, rastcolumn name|_float8
+public|_raster_constraint_info_num_bands|rastschema name, rasttable name, rastcolumn name|int4
+public|_raster_constraint_info_out_db|rastschema name, rasttable name, rastcolumn name|_bool
+public|_raster_constraint_info_pixel_types|rastschema name, rasttable name, rastcolumn name|_text
+public|_raster_constraint_info_regular_blocking|rastschema name, rasttable name, rastcolumn name|bool
+public|_raster_constraint_info_scale|rastschema name, rasttable name, rastcolumn name, axis character|float8
+public|_raster_constraint_info_spatially_unique|rastschema name, rasttable name, rastcolumn name|bool
+public|_raster_constraint_info_srid|rastschema name, rasttable name, rastcolumn name|int4
+public|_raster_constraint_nodata_values|rast raster|_numeric
+public|_raster_constraint_out_db|rast raster|_bool
+public|_raster_constraint_pixel_types|rast raster|_text
+public|_st_asraster|geom geometry, scalex double precision DEFAULT 0, scaley double precision DEFAULT 0, width integer DEFAULT 0, height integer DEFAULT 0, pixeltype text[] DEFAULT ARRAY['8BUI'::text], value double precision[] DEFAULT ARRAY[(1)::double precision], nodataval double precision[] DEFAULT ARRAY[(0)::double precision], upperleftx double precision DEFAULT NULL::double precision, upperlefty double precision DEFAULT NULL::double precision, gridx double precision DEFAULT NULL::double precision, gridy double precision DEFAULT NULL::double precision, skewx double precision DEFAULT 0, skewy double precision DEFAULT 0, touched boolean DEFAULT false|raster
+public|_st_rastertoworldcoord|rast raster, columnx integer DEFAULT NULL::integer, rowy integer DEFAULT NULL::integer, OUT longitude double precision, OUT latitude double precision|record
+public|_st_worldtorastercoord|rast raster, longitude double precision DEFAULT NULL::double precision, latitude double precision DEFAULT NULL::double precision, OUT columnx integer, OUT rowy integer|record
+public|_updaterastersrid|schema_name name, table_name name, column_name name, new_srid integer|bool
+public|addgeometrycolumn|table_name character varying, column_name character varying, new_srid integer, new_type character varying, new_dim integer, use_typmod boolean DEFAULT true|text
+public|addgeometrycolumn|schema_name character varying, table_name character varying, column_name character varying, new_srid integer, new_type character varying, new_dim integer, use_typmod boolean DEFAULT true|text
+public|addgeometrycolumn|catalog_name character varying, schema_name character varying, table_name character varying, column_name character varying, new_srid_in integer, new_type character varying, new_dim integer, use_typmod boolean DEFAULT true|text
+public|addrasterconstraints|rasttable name, rastcolumn name, VARIADIC constraints text[]|bool
+public|addrasterconstraints|rasttable name, rastcolumn name, srid boolean DEFAULT true, scale_x boolean DEFAULT true, scale_y boolean DEFAULT true, blocksize_x boolean DEFAULT true, blocksize_y boolean DEFAULT true, same_alignment boolean DEFAULT true, regular_blocking boolean DEFAULT false, num_bands boolean DEFAULT true, pixel_types boolean DEFAULT true, nodata_values boolean DEFAULT true, out_db boolean DEFAULT true, extent boolean DEFAULT true|bool
+public|addrasterconstraints|rastschema name, rasttable name, rastcolumn name, srid boolean DEFAULT true, scale_x boolean DEFAULT true, scale_y boolean DEFAULT true, blocksize_x boolean DEFAULT true, blocksize_y boolean DEFAULT true, same_alignment boolean DEFAULT true, regular_blocking boolean DEFAULT false, num_bands boolean DEFAULT true, pixel_types boolean DEFAULT true, nodata_values boolean DEFAULT true, out_db boolean DEFAULT true, extent boolean DEFAULT true|bool
+public|addrasterconstraints|rastschema name, rasttable name, rastcolumn name, VARIADIC constraints text[]|bool
+public|dropgeometrycolumn|schema_name character varying, table_name character varying, column_name character varying|text
+public|dropgeometrycolumn|catalog_name character varying, schema_name character varying, table_name character varying, column_name character varying|text
+public|dropgeometrycolumn|table_name character varying, column_name character varying|text
+public|dropgeometrytable|table_name character varying|text
+public|dropgeometrytable|schema_name character varying, table_name character varying|text
+public|dropgeometrytable|catalog_name character varying, schema_name character varying, table_name character varying|text
+public|droprasterconstraints|rasttable name, rastcolumn name, VARIADIC constraints text[]|bool
+public|droprasterconstraints|rastschema name, rasttable name, rastcolumn name, srid boolean DEFAULT true, scale_x boolean DEFAULT true, scale_y boolean DEFAULT true, blocksize_x boolean DEFAULT true, blocksize_y boolean DEFAULT true, same_alignment boolean DEFAULT true, regular_blocking boolean DEFAULT true, num_bands boolean DEFAULT true, pixel_types boolean DEFAULT true, nodata_values boolean DEFAULT true, out_db boolean DEFAULT true, extent boolean DEFAULT true|bool
+public|droprasterconstraints|rasttable name, rastcolumn name, srid boolean DEFAULT true, scale_x boolean DEFAULT true, scale_y boolean DEFAULT true, blocksize_x boolean DEFAULT true, blocksize_y boolean DEFAULT true, same_alignment boolean DEFAULT true, regular_blocking boolean DEFAULT true, num_bands boolean DEFAULT true, pixel_types boolean DEFAULT true, nodata_values boolean DEFAULT true, out_db boolean DEFAULT true, extent boolean DEFAULT true|bool
+public|droprasterconstraints|rastschema name, rasttable name, rastcolumn name, VARIADIC constraints text[]|bool
+public|geography|geography, integer, boolean|geography
+public|geography|geometry|geography
+public|geography|bytea|geography
+public|geography_analyze|internal|bool
+public|geography_cmp|geography, geography|int4
+public|geography_distance_knn|geography, geography|float8
+public|geography_eq|geography, geography|bool
+public|geography_ge|geography, geography|bool
+public|geography_gist_compress|internal|internal
+public|geography_gist_consistent|internal, geography, integer|bool
+public|geography_gist_decompress|internal|internal
+public|geography_gist_distance|internal, geography, integer|float8
+public|geography_gist_penalty|internal, internal, internal|internal
+public|geography_gist_picksplit|internal, internal|internal
+public|geography_gist_same|box2d, box2d, internal|internal
+public|geography_gist_union|bytea, internal|internal
+public|geography_gt|geography, geography|bool
+public|geography_in|cstring, oid, integer|geography
+public|geography_le|geography, geography|bool
+public|geography_lt|geography, geography|bool
+public|geography_out|geography|cstring
+public|geography_overlaps|geography, geography|bool
+public|geography_recv|internal, oid, integer|geography
+public|geography_send|geography|bytea
+public|geography_spgist_choose_nd|internal, internal|void
+public|geography_spgist_compress_nd|internal|internal
+public|geography_spgist_config_nd|internal, internal|void
+public|geography_spgist_inner_consistent_nd|internal, internal|void
+public|geography_spgist_leaf_consistent_nd|internal, internal|bool
+public|geography_spgist_picksplit_nd|internal, internal|void
+public|geography_typmod_in|cstring[]|int4
+public|geography_typmod_out|integer|cstring
+public|geometry|path|geometry
+public|geometry|box2d|geometry
+public|geometry|bytea|geometry
+public|geometry|geography|geometry
+public|geometry|box3d|geometry
+public|geometry|point|geometry
+
+-- ================================================================================
+-- POSTGIS DATA TYPES
+-- ================================================================================
+schema_name|type_name|type_kind|type_description
+public|_geography|b|base type
+public|_geography_columns|b|base type
+public|_geometry|b|base type
+public|_geometry_columns|b|base type
+public|_geometry_dump|b|base type
+public|_raster|b|base type
+public|_raster_columns|b|base type
+public|_raster_overviews|b|base type
+public|box2d|b|base type
+public|box2df|b|base type
+public|box3d|b|base type
+public|geography|b|base type
+public|geography_columns|c|composite type
+public|geometry|b|base type
+public|geometry_columns|c|composite type
+public|geometry_dump|c|composite type
+public|raster|b|base type
+public|raster_columns|c|composite type
+public|raster_overviews|c|composite type
+public|spheroid|b|base type
+topology|_topogeometry|b|base type
+topology|_topology|b|base type
+topology|_validatetopology_returntype|b|base type
+topology|topogeometry|c|composite type
+topology|topology|c|composite type
+topology|validatetopology_returntype|c|composite type
+
+-- ================================================================================
+-- POSTGIS SYSTEM TABLES
+-- ================================================================================
+schema_name|table_name|columns
+public|spatial_ref_sys|srid integer, auth_name character varying(256), auth_srid integer, srtext character varying(2048), proj4text character varying(2048)
+topology|topology|id integer, name character varying, srid integer, precision double precision, hasz boolean
+
+-- ================================================================================
+-- POSTGIS EXTENSION DETAILS
+-- ================================================================================
+extname|extversion|extrelocatable|schema_name
+postgis|3.4.3|f|public
+postgis_raster|3.4.3|f|public
+postgis_tiger_geocoder|3.4.3|f|tiger
+postgis_topology|3.4.3|f|topology
+
+-- ================================================================================
+-- SPATIAL REFERENCE SYSTEMS SAMPLE
+-- ================================================================================
+total_srs
+8500
+srid|auth_name|auth_srid|srtext
+2000|EPSG|2000|PROJCS["Anguilla 1957 / British West Indies Grid",GEOGCS["Anguilla 1957",DATUM["Anguilla_1957",SPHEROID["Clarke 1880 (RGS)",6378249.145,293.465,AUTHORITY["EPSG","7012"]],AUTHORITY["EPSG","6600"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4600"]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",-62],PARAMETER["scale_factor",0.9995],PARAMETER["false_easting",400000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH],AUTHORITY["EPSG","2000"]]
+2001|EPSG|2001|PROJCS["Antigua 1943 / British West Indies Grid",GEOGCS["Antigua 1943",DATUM["Antigua_1943",SPHEROID["Clarke 1880 (RGS)",6378249.145,293.465,AUTHORITY["EPSG","7012"]],TOWGS84[-255,-15,71,0,0,0,0],AUTHORITY["EPSG","6601"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4601"]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",-62],PARAMETER["scale_factor",0.9995],PARAMETER["false_easting",400000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH],AUTHORITY["EPSG","2001"]]
+2002|EPSG|2002|PROJCS["Dominica 1945 / British West Indies Grid",GEOGCS["Dominica 1945",DATUM["Dominica_1945",SPHEROID["Clarke 1880 (RGS)",6378249.145,293.465,AUTHORITY["EPSG","7012"]],TOWGS84[725,685,536,0,0,0,0],AUTHORITY["EPSG","6602"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4602"]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",-62],PARAMETER["scale_factor",0.9995],PARAMETER["false_easting",400000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH],AUTHORITY["EPSG","2002"]]
+2003|EPSG|2003|PROJCS["Grenada 1953 / British West Indies Grid",GEOGCS["Grenada 1953",DATUM["Grenada_1953",SPHEROID["Clarke 1880 (RGS)",6378249.145,293.465,AUTHORITY["EPSG","7012"]],TOWGS84[72,213.7,93,0,0,0,0],AUTHORITY["EPSG","6603"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4603"]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",-62],PARAMETER["scale_factor",0.9995],PARAMETER["false_easting",400000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH],AUTHORITY["EPSG","2003"]]
+2004|EPSG|2004|PROJCS["Montserrat 1958 / British West Indies Grid",GEOGCS["Montserrat 1958",DATUM["Montserrat_1958",SPHEROID["Clarke 1880 (RGS)",6378249.145,293.465,AUTHORITY["EPSG","7012"]],TOWGS84[174,359,365,0,0,0,0],AUTHORITY["EPSG","6604"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4604"]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",-62],PARAMETER["scale_factor",0.9995],PARAMETER["false_easting",400000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH],AUTHORITY["EPSG","2004"]]

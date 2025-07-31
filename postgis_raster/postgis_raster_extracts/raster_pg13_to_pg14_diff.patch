@@ -1,0 +1,100 @@
+--- postgis_raster_extracts/raster_schema_pg13.out	2025-07-31 01:48:40.763506874 +0530
++++ postgis_raster_extracts/raster_schema_pg14.out	2025-07-31 01:48:56.535732283 +0530
+@@ -1,7 +1,7 @@
+ -- PostgreSQL and PostGIS Raster Version Information
+                                                             version                                                            
+ -------------------------------------------------------------------------------------------------------------------------------
+- PostgreSQL 13.16 (Debian 13.16-1.pgdg110+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit
++ PostgreSQL 14.13 (Debian 14.13-1.pgdg110+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit
+ (1 row)
+ 
+  extname | extversion 
+@@ -41,19 +41,19 @@
+ public|_st_asraster|geom geometry, scalex double precision DEFAULT 0, scaley double precision DEFAULT 0, width integer DEFAULT 0, height integer DEFAULT 0, pixeltype text[] DEFAULT ARRAY['8BUI'::text], value double precision[] DEFAULT ARRAY[(1)::double precision], nodataval double precision[] DEFAULT ARRAY[(0)::double precision], upperleftx double precision DEFAULT NULL::double precision, upperlefty double precision DEFAULT NULL::double precision, gridx double precision DEFAULT NULL::double precision, gridy double precision DEFAULT NULL::double precision, skewx double precision DEFAULT 0, skewy double precision DEFAULT 0, touched boolean DEFAULT false|raster
+ public|geometry_contained_by_raster|geometry, raster|bool
+ public|st_asgdalraster|rast raster, format text, options text[] DEFAULT NULL::text[], srid integer DEFAULT NULL::integer|bytea
+-public|st_asraster|geom geometry, width integer, height integer, pixeltype text, value double precision DEFAULT 1, nodataval double precision DEFAULT 0, upperleftx double precision DEFAULT NULL::double precision, upperlefty double precision DEFAULT NULL::double precision, skewx double precision DEFAULT 0, skewy double precision DEFAULT 0, touched boolean DEFAULT false|raster
+-public|st_asraster|geom geometry, width integer, height integer, gridx double precision, gridy double precision, pixeltype text, value double precision DEFAULT 1, nodataval double precision DEFAULT 0, skewx double precision DEFAULT 0, skewy double precision DEFAULT 0, touched boolean DEFAULT false|raster
+-public|st_asraster|geom geometry, scalex double precision, scaley double precision, pixeltype text, value double precision DEFAULT 1, nodataval double precision DEFAULT 0, upperleftx double precision DEFAULT NULL::double precision, upperlefty double precision DEFAULT NULL::double precision, skewx double precision DEFAULT 0, skewy double precision DEFAULT 0, touched boolean DEFAULT false|raster
+-public|st_asraster|geom geometry, scalex double precision, scaley double precision, gridx double precision, gridy double precision, pixeltype text, value double precision DEFAULT 1, nodataval double precision DEFAULT 0, skewx double precision DEFAULT 0, skewy double precision DEFAULT 0, touched boolean DEFAULT false|raster
+-public|st_asraster|geom geometry, width integer, height integer, pixeltype text[], value double precision[] DEFAULT ARRAY[(1)::double precision], nodataval double precision[] DEFAULT ARRAY[(0)::double precision], upperleftx double precision DEFAULT NULL::double precision, upperlefty double precision DEFAULT NULL::double precision, skewx double precision DEFAULT 0, skewy double precision DEFAULT 0, touched boolean DEFAULT false|raster
+-public|st_asraster|geom geometry, width integer, height integer, gridx double precision DEFAULT NULL::double precision, gridy double precision DEFAULT NULL::double precision, pixeltype text[] DEFAULT ARRAY['8BUI'::text], value double precision[] DEFAULT ARRAY[(1)::double precision], nodataval double precision[] DEFAULT ARRAY[(0)::double precision], skewx double precision DEFAULT 0, skewy double precision DEFAULT 0, touched boolean DEFAULT false|raster
++public|st_asraster|geom geometry, ref raster, pixeltype text, value double precision DEFAULT 1, nodataval double precision DEFAULT 0, touched boolean DEFAULT false|raster
+ public|st_asraster|geom geometry, scalex double precision, scaley double precision, gridx double precision DEFAULT NULL::double precision, gridy double precision DEFAULT NULL::double precision, pixeltype text[] DEFAULT ARRAY['8BUI'::text], value double precision[] DEFAULT ARRAY[(1)::double precision], nodataval double precision[] DEFAULT ARRAY[(0)::double precision], skewx double precision DEFAULT 0, skewy double precision DEFAULT 0, touched boolean DEFAULT false|raster
+ public|st_asraster|geom geometry, scalex double precision, scaley double precision, pixeltype text[], value double precision[] DEFAULT ARRAY[(1)::double precision], nodataval double precision[] DEFAULT ARRAY[(0)::double precision], upperleftx double precision DEFAULT NULL::double precision, upperlefty double precision DEFAULT NULL::double precision, skewx double precision DEFAULT 0, skewy double precision DEFAULT 0, touched boolean DEFAULT false|raster
+-public|st_asraster|geom geometry, ref raster, pixeltype text, value double precision DEFAULT 1, nodataval double precision DEFAULT 0, touched boolean DEFAULT false|raster
++public|st_asraster|geom geometry, width integer, height integer, gridx double precision DEFAULT NULL::double precision, gridy double precision DEFAULT NULL::double precision, pixeltype text[] DEFAULT ARRAY['8BUI'::text], value double precision[] DEFAULT ARRAY[(1)::double precision], nodataval double precision[] DEFAULT ARRAY[(0)::double precision], skewx double precision DEFAULT 0, skewy double precision DEFAULT 0, touched boolean DEFAULT false|raster
++public|st_asraster|geom geometry, width integer, height integer, pixeltype text[], value double precision[] DEFAULT ARRAY[(1)::double precision], nodataval double precision[] DEFAULT ARRAY[(0)::double precision], upperleftx double precision DEFAULT NULL::double precision, upperlefty double precision DEFAULT NULL::double precision, skewx double precision DEFAULT 0, skewy double precision DEFAULT 0, touched boolean DEFAULT false|raster
++public|st_asraster|geom geometry, scalex double precision, scaley double precision, gridx double precision, gridy double precision, pixeltype text, value double precision DEFAULT 1, nodataval double precision DEFAULT 0, skewx double precision DEFAULT 0, skewy double precision DEFAULT 0, touched boolean DEFAULT false|raster
++public|st_asraster|geom geometry, scalex double precision, scaley double precision, pixeltype text, value double precision DEFAULT 1, nodataval double precision DEFAULT 0, upperleftx double precision DEFAULT NULL::double precision, upperlefty double precision DEFAULT NULL::double precision, skewx double precision DEFAULT 0, skewy double precision DEFAULT 0, touched boolean DEFAULT false|raster
++public|st_asraster|geom geometry, width integer, height integer, gridx double precision, gridy double precision, pixeltype text, value double precision DEFAULT 1, nodataval double precision DEFAULT 0, skewx double precision DEFAULT 0, skewy double precision DEFAULT 0, touched boolean DEFAULT false|raster
++public|st_asraster|geom geometry, width integer, height integer, pixeltype text, value double precision DEFAULT 1, nodataval double precision DEFAULT 0, upperleftx double precision DEFAULT NULL::double precision, upperlefty double precision DEFAULT NULL::double precision, skewx double precision DEFAULT 0, skewy double precision DEFAULT 0, touched boolean DEFAULT false|raster
+ public|st_asraster|geom geometry, ref raster, pixeltype text[] DEFAULT ARRAY['8BUI'::text], value double precision[] DEFAULT ARRAY[(1)::double precision], nodataval double precision[] DEFAULT ARRAY[(0)::double precision], touched boolean DEFAULT false|raster
+-public|st_band|rast raster, nband integer|raster
+-public|st_band|rast raster, nbands text, delimiter character DEFAULT ','::bpchar|raster
+ public|st_band|rast raster, nbands integer[] DEFAULT ARRAY[1]|raster
++public|st_band|rast raster, nbands text, delimiter character DEFAULT ','::bpchar|raster
++public|st_band|rast raster, nband integer|raster
+ public|st_bandfilesize|rast raster, band integer DEFAULT 1|int8
+ public|st_bandfiletimestamp|rast raster, band integer DEFAULT 1|int8
+ public|st_bandisnodata|rast raster, forcechecking boolean|bool
+@@ -71,19 +71,19 @@
+ public|st_pixelheight|raster|float8
+ public|st_pixelwidth|raster|float8
+ public|st_rastertoworldcoord|rast raster, columnx integer, rowy integer, OUT longitude double precision, OUT latitude double precision|record
+-public|st_rastertoworldcoordx|rast raster, xr integer|float8
+ public|st_rastertoworldcoordx|rast raster, xr integer, yr integer|float8
+-public|st_rastertoworldcoordy|rast raster, xr integer, yr integer|float8
++public|st_rastertoworldcoordx|rast raster, xr integer|float8
+ public|st_rastertoworldcoordy|rast raster, yr integer|float8
++public|st_rastertoworldcoordy|rast raster, xr integer, yr integer|float8
+ public|st_rotation|raster|float8
+ public|st_scalex|raster|float8
+ public|st_scaley|raster|float8
+-public|st_setbandnodatavalue|rast raster, nodatavalue double precision|raster
+ public|st_setbandnodatavalue|rast raster, band integer, nodatavalue double precision, forcechecking boolean DEFAULT false|raster
++public|st_setbandnodatavalue|rast raster, nodatavalue double precision|raster
+ public|st_skewx|raster|float8
+ public|st_skewy|raster|float8
+-public|st_srid|geog geography|int4
+ public|st_srid|geom geometry|int4
++public|st_srid|geog geography|int4
+ public|st_srid|raster|int4
+ public|st_upperleftx|raster|float8
+ public|st_upperlefty|raster|float8
+@@ -94,8 +94,8 @@
+ public|st_worldtorastercoordx|rast raster, pt geometry|int4
+ public|st_worldtorastercoordx|rast raster, xw double precision, yw double precision|int4
+ public|st_worldtorastercoordy|rast raster, xw double precision, yw double precision|int4
+-public|st_worldtorastercoordy|rast raster, yw double precision|int4
+ public|st_worldtorastercoordy|rast raster, pt geometry|int4
++public|st_worldtorastercoordy|rast raster, yw double precision|int4
+ -- ================================================================================
+ -- RASTER DATA TYPES
+ -- ================================================================================
+@@ -152,7 +152,7 @@
+     split_part(split_part(s.consrc, '''::name'::text, 1), ''''::text, 2)::name AS r_table_schema,
+     split_part(split_part(s.consrc, '''::name'::text, 2), ''''::text, 2)::name AS r_table_name,
+     split_part(split_part(s.consrc, '''::name'::text, 3), ''''::text, 2)::name AS r_raster_column,
+-    btrim(split_part(s.consrc, ','::text, 2))::integer AS overview_factor
++    TRIM(BOTH FROM split_part(s.consrc, ','::text, 2))::integer AS overview_factor
+    FROM pg_class c,
+     pg_attribute a,
+     pg_type t,
+@@ -185,14 +185,14 @@
+ -- RASTER SAMPLE DATA (if any raster tables exist)
+ -- ================================================================================
+ Raster Columns Information:
+-psql:/tmp/postgis_raster_extractor.sql:222: NOTICE:  Raster columns view exists and accessible
+ DO
++psql:/tmp/postgis_raster_extractor.sql:222: NOTICE:  Raster columns view exists and accessible
+  r_table_catalog | r_table_schema | r_table_name | r_raster_column | srid | scale_x | scale_y | blocksize_x | blocksize_y | same_alignment | regular_blocking | num_bands | pixel_types | nodata_values | out_db | extent 
+ -----------------+----------------+--------------+-----------------+------+---------+---------+-------------+-------------+----------------+------------------+-----------+-------------+---------------+--------+--------
+ 
+ Raster Overviews Information:
+-psql:/tmp/postgis_raster_extractor.sql:258: NOTICE:  Raster overviews view exists and accessible
+ DO
++psql:/tmp/postgis_raster_extractor.sql:258: NOTICE:  Raster overviews view exists and accessible
+  o_table_catalog | o_table_schema | o_table_name | o_raster_column | r_table_catalog | r_table_schema | r_table_name | r_raster_column | overview_factor 
+ -----------------+----------------+--------------+-----------------+-----------------+----------------+--------------+-----------------+-----------------
+ 

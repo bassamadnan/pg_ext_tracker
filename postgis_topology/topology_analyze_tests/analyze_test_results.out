@@ -1,0 +1,137 @@
+-- ================================================================================
+-- POSTGIS TOPOLOGY WITH ANALYZE MONITORING TEST
+-- ================================================================================
+CREATE EXTENSION
+psql:/tmp/topology_analyze_test.sql:6: NOTICE:  extension "postgis" already exists, skipping
+psql:/tmp/topology_analyze_test.sql:7: NOTICE:  extension "postgis_topology" already exists, skipping
+CREATE EXTENSION
+-- ================================================================================
+-- CREATE TEST TOPOLOGIES WITH DATA
+-- ================================================================================
+Creating test topologies...
+psql:/tmp/topology_analyze_test.sql:56: NOTICE:  Created city_network topology with ID: 1
+psql:/tmp/topology_analyze_test.sql:56: NOTICE:  Created road_system topology with ID: 2
+psql:/tmp/topology_analyze_test.sql:56: NOTICE:  Created empty_topology with ID: 3
+psql:/tmp/topology_analyze_test.sql:56: NOTICE:  All test topologies created successfully
+DO
+-- ================================================================================
+-- FORCE ANALYZE ON ALL TOPOLOGY TABLES
+-- ================================================================================
+Running ANALYZE on all topology tables to update statistics...
+psql:/tmp/topology_analyze_test.sql:73: NOTICE:  Analyzed tables for topology: city_network
+psql:/tmp/topology_analyze_test.sql:73: NOTICE:  Analyzed tables for topology: road_system
+psql:/tmp/topology_analyze_test.sql:73: NOTICE:  Analyzed tables for topology: empty_topology
+DO
+-- ================================================================================
+-- TEST QUERIES AFTER ANALYZE
+-- ================================================================================
+TEST 1: Basic Topology Information
+ id |      name      | srid | precision | hasz 
+----+----------------+------+-----------+------
+  1 | city_network   | 4326 |     0.001 | f
+  2 | road_system    | 3857 |      0.01 | f
+  3 | empty_topology | 4269 |    0.0001 | f
+(3 rows)
+
+TEST 2: Node Counts After ANALYZE
+Query: Join topology info with pg_stat_user_tables for node counts
+ topology_name  | srid | live_node_count | inserted_nodes | updated_nodes | deleted_nodes 
+----------------+------+-----------------+----------------+---------------+---------------
+ city_network   | 4326 |               4 |              0 |             0 |             0
+ road_system    | 3857 |               2 |              0 |             0 |             0
+ empty_topology | 4269 |               0 |              0 |             0 |             0
+(3 rows)
+
+TEST 3: Edge Counts After ANALYZE
+ topology_name  | srid | live_edge_count | inserted_edges 
+----------------+------+-----------------+----------------
+ city_network   | 4326 |               3 |              0
+ road_system    | 3857 |               1 |              0
+ empty_topology | 4269 |               0 |              0
+(3 rows)
+
+TEST 4: Face Counts After ANALYZE
+ topology_name  | srid | live_face_count | inserted_faces 
+----------------+------+-----------------+----------------
+ city_network   | 4326 |               1 |              0
+ road_system    | 3857 |               1 |              0
+ empty_topology | 4269 |               1 |              0
+(3 rows)
+
+TEST 5: Combined Primitives Summary After ANALYZE
+ topology_name  | srid | precision | node_count | edge_count | face_count | total_primitives 
+----------------+------+-----------+------------+------------+------------+------------------
+ city_network   | 4326 |     0.001 |          4 |          3 |          1 |                8
+ road_system    | 3857 |      0.01 |          2 |          1 |          1 |                4
+ empty_topology | 4269 |    0.0001 |          0 |          0 |          1 |                1
+(3 rows)
+
+TEST 6: System-Wide Statistics After ANALYZE
+ total_topologies | unique_srids |     avg_precision     | total_nodes | total_edges | total_faces 
+------------------+--------------+-----------------------+-------------+-------------+-------------
+                3 |            3 | 0.0036999999999999997 |           6 |           4 |           3
+(1 row)
+
+TEST 7: Table Storage Information
+ topology_name  | total_topology_size | node_table_size | edge_table_size | face_table_size 
+----------------+---------------------+-----------------+-----------------+-----------------
+ city_network   | 232 kB              | 56 kB           | 136 kB          | 40 kB
+ road_system    | 232 kB              | 56 kB           | 136 kB          | 40 kB
+ empty_topology | 144 kB              | 32 kB           | 72 kB           | 40 kB
+(3 rows)
+
+TEST 8: SRID Distribution
+ srid | topology_count | total_nodes_for_srid | total_edges_for_srid 
+------+----------------+----------------------+----------------------
+ 4326 |              1 |                    4 |                    3
+ 4269 |              1 |                    0 |                    0
+ 3857 |              1 |                    2 |                    1
+(3 rows)
+
+TEST 9: Topology Health and Activity
+ topology_name  | srid | has_node_table | has_edge_table | has_face_table | current_node_count | current_edge_count | topology_status 
+----------------+------+----------------+----------------+----------------+--------------------+--------------------+-----------------
+ city_network   | 4326 | YES            | YES            | YES            |                  4 |                  3 | ACTIVE
+ road_system    | 3857 | YES            | YES            | YES            |                  2 |                  1 | ACTIVE
+ empty_topology | 4269 | YES            | YES            | YES            |                  0 |                  0 | EMPTY
+(3 rows)
+
+TEST 10: Verification - Direct Count Comparison
+This shows what the counts should be (for verification):
+psql:/tmp/topology_analyze_test.sql:207: NOTICE:  VERIFICATION - city_network | Nodes: 4, Edges: 3, Faces: 1
+psql:/tmp/topology_analyze_test.sql:207: NOTICE:  VERIFICATION - road_system | Nodes: 2, Edges: 1, Faces: 1
+psql:/tmp/topology_analyze_test.sql:207: NOTICE:  VERIFICATION - empty_topology | Nodes: 0, Edges: 0, Faces: 1
+DO
+-- ================================================================================
+-- CLEANUP TEST DATA
+-- ================================================================================
+Cleaning up test topologies...
+psql:/tmp/topology_analyze_test.sql:227: NOTICE:  Dropping all layers from topology 'city_network' (1)
+psql:/tmp/topology_analyze_test.sql:227: NOTICE:  drop cascades to 6 other objects
+DETAIL:  drop cascades to table city_network.face
+drop cascades to table city_network.node
+drop cascades to table city_network.edge_data
+drop cascades to view city_network.edge
+drop cascades to sequence city_network.layer_id_seq
+drop cascades to table city_network.relation
+psql:/tmp/topology_analyze_test.sql:227: NOTICE:  Dropped topology: city_network
+psql:/tmp/topology_analyze_test.sql:227: NOTICE:  Dropping all layers from topology 'road_system' (2)
+psql:/tmp/topology_analyze_test.sql:227: NOTICE:  drop cascades to 6 other objects
+DETAIL:  drop cascades to table road_system.face
+drop cascades to table road_system.node
+drop cascades to table road_system.edge_data
+drop cascades to view road_system.edge
+drop cascades to sequence road_system.layer_id_seq
+drop cascades to table road_system.relation
+psql:/tmp/topology_analyze_test.sql:227: NOTICE:  Dropped topology: road_system
+psql:/tmp/topology_analyze_test.sql:227: NOTICE:  Dropping all layers from topology 'empty_topology' (3)
+psql:/tmp/topology_analyze_test.sql:227: NOTICE:  drop cascades to 6 other objects
+DETAIL:  drop cascades to table empty_topology.face
+drop cascades to table empty_topology.node
+drop cascades to table empty_topology.edge_data
+drop cascades to view empty_topology.edge
+drop cascades to sequence empty_topology.layer_id_seq
+drop cascades to table empty_topology.relation
+psql:/tmp/topology_analyze_test.sql:227: NOTICE:  Dropped topology: empty_topology
+DO
+Topology ANALYZE-based monitoring test complete!

@@ -1,0 +1,101 @@
+--- postgis_topology_extracts/topology_schema_pg15.out	2025-07-31 01:19:39.170346706 +0530
++++ postgis_topology_extracts/topology_schema_pg16.out	2025-07-31 01:19:54.704285743 +0530
+@@ -1,7 +1,7 @@
+ -- PostgreSQL and PostGIS Topology Version Information
+                                                            version                                                           
+ -----------------------------------------------------------------------------------------------------------------------------
+- PostgreSQL 15.8 (Debian 15.8-1.pgdg110+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit
++ PostgreSQL 16.4 (Debian 16.4-1.pgdg110+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit
+ (1 row)
+ 
+      extname      | extversion 
+@@ -52,8 +52,8 @@
+ topology|_asgmlnode|id integer, point geometry, nsprefix_in text, prec integer, options integer, idprefix text, gmlver integer|text
+ topology|_checkedgelinking|curedge_edge_id integer, prevedge_edge_id integer, prevedge_next_left_edge integer, prevedge_next_right_edge integer|validatetopology_returntype
+ topology|_st_adjacentedges|atopology character varying, anode integer, anedge integer|_int4
+-topology|_st_mintolerance|ageom geometry|float8
+ topology|_st_mintolerance|atopology character varying, ageom geometry|float8
++topology|_st_mintolerance|ageom geometry|float8
+ topology|_validatetopologyedgelinking|bbox geometry DEFAULT NULL::geometry|validatetopology_returntype
+ topology|_validatetopologygetfaceshellmaximaledgering|atopology character varying, aface integer|geometry
+ topology|_validatetopologygetringedges|starting_edge integer|_int4
+@@ -61,38 +61,38 @@
+ topology|addedge|atopology character varying, aline geometry|int4
+ topology|addface|atopology character varying, apoly geometry, force_new boolean DEFAULT false|int4
+ topology|addnode|atopology character varying, apoint geometry, allowedgesplitting boolean DEFAULT false, setcontainingface boolean DEFAULT false|int4
+-topology|addtopogeometrycolumn|character varying, character varying, character varying, character varying, character varying|int4
+ topology|addtopogeometrycolumn|toponame character varying, schema character varying, tbl character varying, col character varying, ltype character varying, child integer|int4
++topology|addtopogeometrycolumn|character varying, character varying, character varying, character varying, character varying|int4
+ topology|addtosearchpath|a_schema_name character varying|text
+-topology|asgml|tg topogeometry, nsprefix text, prec integer, opts integer|text
+ topology|asgml|tg topogeometry, nsprefix_in text, precision_in integer, options_in integer, visitedtable regclass, idprefix text, gmlver integer|text
+-topology|asgml|tg topogeometry, nsprefix text, prec integer, options integer, vis regclass|text
+ topology|asgml|tg topogeometry, nsprefix text, prec integer, options integer, visitedtable regclass, idprefix text|text
+-topology|asgml|tg topogeometry|text
+-topology|asgml|tg topogeometry, visitedtable regclass, nsprefix text|text
+-topology|asgml|tg topogeometry, visitedtable regclass|text
++topology|asgml|tg topogeometry, nsprefix text, prec integer, options integer, vis regclass|text
++topology|asgml|tg topogeometry, nsprefix text, prec integer, opts integer|text
+ topology|asgml|tg topogeometry, nsprefix text|text
++topology|asgml|tg topogeometry, visitedtable regclass|text
++topology|asgml|tg topogeometry, visitedtable regclass, nsprefix text|text
++topology|asgml|tg topogeometry|text
+ topology|astopojson|tg topogeometry, edgemaptable regclass|text
+ topology|cleartopogeom|tg topogeometry|topogeometry
+ topology|copytopology|atopology character varying, newtopo character varying|int4
+-topology|createtopogeom|toponame character varying, tg_type integer, layer_id integer, tg_objs topoelementarray|topogeometry
+ topology|createtopogeom|toponame character varying, tg_type integer, layer_id integer|topogeometry
+-topology|createtopology|character varying|int4
+-topology|createtopology|toponame character varying, srid integer, prec double precision|int4
++topology|createtopogeom|toponame character varying, tg_type integer, layer_id integer, tg_objs topoelementarray|topogeometry
+ topology|createtopology|atopology character varying, srid integer, prec double precision, hasz boolean|int4
++topology|createtopology|toponame character varying, srid integer, prec double precision|int4
+ topology|createtopology|character varying, integer|int4
++topology|createtopology|character varying|int4
+ topology|droptopogeometrycolumn|schema character varying, tbl character varying, col character varying|text
+ topology|droptopology|atopology character varying|text
+ topology|equals|tg1 topogeometry, tg2 topogeometry|bool
++topology|findlayer|topology_id integer, layer_id integer|layer
+ topology|findlayer|tg topogeometry|layer
+ topology|findlayer|layer_table regclass, feature_column name|layer
+ topology|findlayer|schema_name name, table_name name, feature_column name|layer
+-topology|findlayer|topology_id integer, layer_id integer|layer
+-topology|findtopology|topogeometry|topology
+ topology|findtopology|text|topology
++topology|findtopology|topogeometry|topology
++topology|findtopology|regclass, name|topology
+ topology|findtopology|integer|topology
+ topology|findtopology|name, name, name|topology
+-topology|findtopology|regclass, name|topology
+ topology|geometry|topogeom topogeometry|geometry
+ topology|geometrytype|tg topogeometry|text
+ topology|getedgebypoint|atopology character varying, apoint geometry, tol1 double precision|int4
+@@ -101,8 +101,8 @@
+ topology|getnodebypoint|atopology character varying, apoint geometry, tol1 double precision|int4
+ topology|getnodeedges|atopology character varying, anode integer|getfaceedges_returntype
+ topology|getringedges|atopology character varying, anedge integer, maxedges integer DEFAULT NULL::integer|getfaceedges_returntype
+-topology|gettopogeomelementarray|toponame character varying, layer_id integer, tgid integer|topoelementarray
+ topology|gettopogeomelementarray|tg topogeometry|topoelementarray
++topology|gettopogeomelementarray|toponame character varying, layer_id integer, tgid integer|topoelementarray
+ topology|gettopogeomelements|tg topogeometry|topoelement
+ topology|gettopogeomelements|toponame character varying, layerid integer, tgid integer|topoelement
+ topology|gettopologyid|toponame character varying|int4
+@@ -150,8 +150,8 @@
+ topology|topogeom_addtopogeom|tgt topogeometry, src topogeometry|topogeometry
+ topology|topogeom_remelement|tg topogeometry, el topoelement|topogeometry
+ topology|topologysummary|atopology character varying|text
+-topology|totopogeom|ageom geometry, tg topogeometry, atolerance double precision DEFAULT 0|topogeometry
+ topology|totopogeom|ageom geometry, atopology character varying, alayer integer, atolerance double precision DEFAULT 0|topogeometry
++topology|totopogeom|ageom geometry, tg topogeometry, atolerance double precision DEFAULT 0|topogeometry
+ topology|validatetopology|toponame character varying, bbox geometry DEFAULT NULL::geometry|validatetopology_returntype
+ topology|validatetopologyrelation|toponame character varying|record
+ -- ================================================================================
+@@ -200,7 +200,7 @@
+ -- ================================================================================
+      extname      | extversion | extrelocatable | schema_name |    config_tables    | conditions 
+ ------------------+------------+----------------+-------------+---------------------+------------
+- postgis_topology | 3.4.3      | f              | topology    | {19121,19122,19134} | {"","",""}
++ postgis_topology | 3.4.3      | f              | topology    | {19122,19123,19135} | {"","",""}
+ 
+ -- ================================================================================
+ -- TOPOLOGY SAMPLE DATA (if any topologies exist)

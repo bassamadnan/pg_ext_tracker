@@ -1,0 +1,132 @@
+-- ================================================================================
+-- POSTGIS TOPOLOGY MONITORING TEST
+-- ================================================================================
+CREATE EXTENSION
+psql:/tmp/topology_monitoring_test.sql:6: NOTICE:  extension "postgis" already exists, skipping
+CREATE EXTENSION
+Extension Status:
+psql:/tmp/topology_monitoring_test.sql:7: NOTICE:  extension "postgis_topology" already exists, skipping
+     extname      | extversion 
+------------------+------------
+ postgis          | 3.4.3
+ postgis_topology | 3.4.3
+(2 rows)
+
+-- ================================================================================
+-- TESTING TOPOLOGY MONITORING QUERIES (FROM YAML CONFIG)
+-- ================================================================================
+TEST 1: Topology Inventory
+Query: SELECT COUNT(*) as topology_count FROM topology.topology;
+ topology_count 
+----------------
+              0
+(1 row)
+
+TEST 2: Topology Details
+Query: SELECT id, name, srid, precision, hasz FROM topology.topology ORDER BY id;
+ id | name | srid | precision | hasz 
+----+------+------+-----------+------
+(0 rows)
+
+TEST 3: SRID Distribution
+Query: SELECT srid, COUNT(*) as topology_count FROM topology.topology GROUP BY srid ORDER BY topology_count DESC;
+ srid | topology_count 
+------+----------------
+(0 rows)
+
+TEST 4: Topology Primitives by Topology
+Query: Complex query with subqueries for node/edge/face counts
+psql:/tmp/topology_monitoring_test.sql:37: ERROR:  relation "topology.node" does not exist
+LINE 4:     (SELECT COUNT(*) FROM topology.node WHERE topology_id = ...
+                                  ^
+psql:/tmp/topology_monitoring_test.sql:44: ERROR:  relation "topology.node" does not exist
+LINE 2:     (SELECT COUNT(*) FROM topology.node) as total_nodes, 
+                                  ^
+TEST 5: Total Primitive Counts
+Query: System-wide totals
+TEST 6: Topology Layers
+Query: SELECT topology_id, layer_id, feature_type, level FROM topology.layer ORDER BY topology_id, layer_id;
+ topology_id | layer_id | feature_type | level 
+-------------+----------+--------------+-------
+(0 rows)
+
+TEST 7: Layer Summary
+Query: Layer counts per topology
+ topology_id | topology_name | layer_count 
+-------------+---------------+-------------
+(0 rows)
+
+TEST 8: Precision Statistics
+Query: SELECT precision, COUNT(*) as topology_count FROM topology.topology GROUP BY precision ORDER BY precision;
+ precision | topology_count 
+-----------+----------------
+(0 rows)
+
+TEST 9: Node Edge Connectivity
+Query: Isolated nodes detection
+psql:/tmp/topology_monitoring_test.sql:73: ERROR:  relation "topology.node" does not exist
+LINE 4: FROM topology.node n 
+             ^
+TEST 10: Face Edge Statistics
+Query: Face complexity analysis
+psql:/tmp/topology_monitoring_test.sql:82: ERROR:  relation "topology.face" does not exist
+LINE 4: FROM topology.face 
+             ^
+TEST 11: Storage Statistics
+Query: Table sizes
+psql:/tmp/topology_monitoring_test.sql:92: ERROR:  relation "topology.node" does not exist
+LINE 3:     pg_size_pretty(pg_total_relation_size('topology.node')) ...
+                                                  ^
+TEST 12: Feature Type Distribution
+Query: Layer feature types
+ feature_type | feature_type_name | layer_count 
+--------------+-------------------+-------------
+(0 rows)
+
+-- ================================================================================
+-- CREATING SAMPLE TOPOLOGY DATA FOR TESTING
+-- ================================================================================
+Creating test topology for validation...
+psql:/tmp/topology_monitoring_test.sql:147: NOTICE:  Created topology with ID: 1
+psql:/tmp/topology_monitoring_test.sql:147: NOTICE:  Added nodes: 1, 2, 3
+psql:/tmp/topology_monitoring_test.sql:147: NOTICE:  Added edges: 1, 2
+psql:/tmp/topology_monitoring_test.sql:147: NOTICE:  Test topology created successfully
+DO
+-- ================================================================================
+-- RE-RUNNING QUERIES WITH TEST DATA
+-- ================================================================================
+RETEST: Topology Inventory (should show test_topology)
+ topology_count 
+----------------
+              1
+(1 row)
+
+RETEST: Topology Details (should include test_topology)
+ id |     name      | srid | precision | hasz 
+----+---------------+------+-----------+------
+  1 | test_topology | 4326 |    0.0001 | f
+(1 row)
+
+RETEST: Primitives by Topology (should show test data)
+RETEST: Total Primitives (should show increased counts)
+-- ================================================================================
+-- CLEANUP TEST DATA
+-- ================================================================================
+Cleaning up test topology...
+psql:/tmp/topology_monitoring_test.sql:166: ERROR:  relation "topology.node" does not exist
+LINE 4:     (SELECT COUNT(*) FROM topology.node WHERE topology_id = ...
+                                  ^
+psql:/tmp/topology_monitoring_test.sql:172: ERROR:  relation "topology.node" does not exist
+LINE 2:     (SELECT COUNT(*) FROM topology.node) as total_nodes, 
+                                  ^
+psql:/tmp/topology_monitoring_test.sql:187: NOTICE:  Dropping all layers from topology 'test_topology' (1)
+psql:/tmp/topology_monitoring_test.sql:187: NOTICE:  drop cascades to 6 other objects
+DETAIL:  drop cascades to table test_topology.face
+drop cascades to table test_topology.node
+drop cascades to table test_topology.edge_data
+drop cascades to view test_topology.edge
+drop cascades to sequence test_topology.layer_id_seq
+drop cascades to table test_topology.relation
+psql:/tmp/topology_monitoring_test.sql:187: NOTICE:  Test topology dropped successfully
+DO
+Topology monitoring query testing complete!

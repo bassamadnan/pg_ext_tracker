@@ -1,0 +1,21 @@
+--- postgis_topology_extracts/topology_schema_pg16.out	2025-07-31 01:19:54.704285743 +0530
++++ postgis_topology_extracts/topology_schema_pg17.out	2025-07-31 01:20:10.243151626 +0530
+@@ -1,7 +1,7 @@
+ -- PostgreSQL and PostGIS Topology Version Information
+                                                            version                                                           
+ -----------------------------------------------------------------------------------------------------------------------------
+- PostgreSQL 16.4 (Debian 16.4-1.pgdg110+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit
++ PostgreSQL 17.0 (Debian 17.0-1.pgdg110+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit
+ (1 row)
+ 
+      extname      | extversion 
+@@ -18,8 +18,8 @@
+ (1 row)
+ 
+ Installing PostGIS Topology extension if not present...
+-CREATE EXTENSION
+ psql:/tmp/postgis_topology_extractor.sql:12: NOTICE:  extension "postgis_topology" already exists, skipping
++CREATE EXTENSION
+      extname      | extversion 
+ ------------------+------------
+  postgis_topology | 3.4.3

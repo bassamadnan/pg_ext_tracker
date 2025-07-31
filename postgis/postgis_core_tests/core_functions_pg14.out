@@ -1,0 +1,32 @@
+-- ================================================================================
+-- POSTGIS CORE FUNCTION TESTS
+-- ================================================================================
+TEST 1: Basic Geometry Functions
+Testing basic geometry creation and measurement...
+DO
+TEST 2: Geography Functions
+Testing geography calculations...
+psql:/tmp/postgis_core_function_tests.sql:25: NOTICE:  PASS: Basic geometry functions work (area: 1)
+psql:/tmp/postgis_core_function_tests.sql:47: NOTICE:  PASS: Geography functions work (distance: 4139145 meters)
+DO
+TEST 3: Spatial Index Support
+Testing GIST index creation...
+psql:/tmp/postgis_core_function_tests.sql:68: NOTICE:  table "test_spatial_table" does not exist, skipping
+psql:/tmp/postgis_core_function_tests.sql:68: NOTICE:  PASS: Spatial index creation successful
+DO
+TEST 4: Geometry Validation
+Testing geometry validation functions...
+psql:/tmp/postgis_core_function_tests.sql:87: NOTICE:  PASS: Geometry validation functions work
+DO
+TEST 5: System Tables Access
+Testing access to PostGIS system tables...
+psql:/tmp/postgis_core_function_tests.sql:106: NOTICE:  PASS: System tables accessible (WGS84 found)
+DO
+TEST 6: Measurement Functions for Monitoring
+Testing functions useful for spatial data monitoring...
+psql:/tmp/postgis_core_function_tests.sql:129: NOTICE:  PASS: Measurement functions work (length: 2, bbox_area: 1)
+DO
+TEST 7: Extension Health Check
+Testing PostGIS extension installation and health...
+DO
+psql:/tmp/postgis_core_function_tests.sql:156: NOTICE:  PASS: PostGIS extension healthy (464 functions available)

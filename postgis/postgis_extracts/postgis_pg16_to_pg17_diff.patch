@@ -1,0 +1,59 @@
+--- postgis_extracts/postgis_schema_pg16.out	2025-07-28 15:40:50.859703434 +0530
++++ postgis_extracts/postgis_schema_pg17.out	2025-07-28 15:41:06.289621578 +0530
+@@ -1,7 +1,7 @@
+ -- PostgreSQL and PostGIS Version Information
+                                                            version                                                           
+ -----------------------------------------------------------------------------------------------------------------------------
+- PostgreSQL 16.4 (Debian 16.4-1.pgdg110+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit
++ PostgreSQL 17.0 (Debian 17.0-1.pgdg110+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit
+ (1 row)
+ 
+            name           | default_version | installed_version 
+@@ -81,25 +81,25 @@
+ public|_st_rastertoworldcoord|rast raster, columnx integer DEFAULT NULL::integer, rowy integer DEFAULT NULL::integer, OUT longitude double precision, OUT latitude double precision|record
+ public|_st_worldtorastercoord|rast raster, longitude double precision DEFAULT NULL::double precision, latitude double precision DEFAULT NULL::double precision, OUT columnx integer, OUT rowy integer|record
+ public|_updaterastersrid|schema_name name, table_name name, column_name name, new_srid integer|bool
+-public|addgeometrycolumn|catalog_name character varying, schema_name character varying, table_name character varying, column_name character varying, new_srid_in integer, new_type character varying, new_dim integer, use_typmod boolean DEFAULT true|text
+ public|addgeometrycolumn|table_name character varying, column_name character varying, new_srid integer, new_type character varying, new_dim integer, use_typmod boolean DEFAULT true|text
+ public|addgeometrycolumn|schema_name character varying, table_name character varying, column_name character varying, new_srid integer, new_type character varying, new_dim integer, use_typmod boolean DEFAULT true|text
++public|addgeometrycolumn|catalog_name character varying, schema_name character varying, table_name character varying, column_name character varying, new_srid_in integer, new_type character varying, new_dim integer, use_typmod boolean DEFAULT true|text
++public|addrasterconstraints|rasttable name, rastcolumn name, VARIADIC constraints text[]|bool
+ public|addrasterconstraints|rasttable name, rastcolumn name, srid boolean DEFAULT true, scale_x boolean DEFAULT true, scale_y boolean DEFAULT true, blocksize_x boolean DEFAULT true, blocksize_y boolean DEFAULT true, same_alignment boolean DEFAULT true, regular_blocking boolean DEFAULT false, num_bands boolean DEFAULT true, pixel_types boolean DEFAULT true, nodata_values boolean DEFAULT true, out_db boolean DEFAULT true, extent boolean DEFAULT true|bool
+ public|addrasterconstraints|rastschema name, rasttable name, rastcolumn name, srid boolean DEFAULT true, scale_x boolean DEFAULT true, scale_y boolean DEFAULT true, blocksize_x boolean DEFAULT true, blocksize_y boolean DEFAULT true, same_alignment boolean DEFAULT true, regular_blocking boolean DEFAULT false, num_bands boolean DEFAULT true, pixel_types boolean DEFAULT true, nodata_values boolean DEFAULT true, out_db boolean DEFAULT true, extent boolean DEFAULT true|bool
+ public|addrasterconstraints|rastschema name, rasttable name, rastcolumn name, VARIADIC constraints text[]|bool
+-public|addrasterconstraints|rasttable name, rastcolumn name, VARIADIC constraints text[]|bool
++public|dropgeometrycolumn|schema_name character varying, table_name character varying, column_name character varying|text
+ public|dropgeometrycolumn|catalog_name character varying, schema_name character varying, table_name character varying, column_name character varying|text
+ public|dropgeometrycolumn|table_name character varying, column_name character varying|text
+-public|dropgeometrycolumn|schema_name character varying, table_name character varying, column_name character varying|text
+-public|dropgeometrytable|catalog_name character varying, schema_name character varying, table_name character varying|text
+ public|dropgeometrytable|table_name character varying|text
+ public|dropgeometrytable|schema_name character varying, table_name character varying|text
++public|dropgeometrytable|catalog_name character varying, schema_name character varying, table_name character varying|text
+ public|droprasterconstraints|rasttable name, rastcolumn name, VARIADIC constraints text[]|bool
+ public|droprasterconstraints|rastschema name, rasttable name, rastcolumn name, srid boolean DEFAULT true, scale_x boolean DEFAULT true, scale_y boolean DEFAULT true, blocksize_x boolean DEFAULT true, blocksize_y boolean DEFAULT true, same_alignment boolean DEFAULT true, regular_blocking boolean DEFAULT true, num_bands boolean DEFAULT true, pixel_types boolean DEFAULT true, nodata_values boolean DEFAULT true, out_db boolean DEFAULT true, extent boolean DEFAULT true|bool
+ public|droprasterconstraints|rasttable name, rastcolumn name, srid boolean DEFAULT true, scale_x boolean DEFAULT true, scale_y boolean DEFAULT true, blocksize_x boolean DEFAULT true, blocksize_y boolean DEFAULT true, same_alignment boolean DEFAULT true, regular_blocking boolean DEFAULT true, num_bands boolean DEFAULT true, pixel_types boolean DEFAULT true, nodata_values boolean DEFAULT true, out_db boolean DEFAULT true, extent boolean DEFAULT true|bool
+ public|droprasterconstraints|rastschema name, rasttable name, rastcolumn name, VARIADIC constraints text[]|bool
+-public|geography|geometry|geography
+ public|geography|geography, integer, boolean|geography
++public|geography|geometry|geography
+ public|geography|bytea|geography
+ public|geography_analyze|internal|bool
+ public|geography_cmp|geography, geography|int4
+@@ -130,12 +130,12 @@
+ public|geography_spgist_picksplit_nd|internal, internal|void
+ public|geography_typmod_in|cstring[]|int4
+ public|geography_typmod_out|integer|cstring
+-public|geometry|point|geometry
+-public|geometry|polygon|geometry
++public|geometry|path|geometry
+ public|geometry|box2d|geometry
++public|geometry|bytea|geometry
++public|geometry|geography|geometry
+ public|geometry|box3d|geometry
+-public|geometry|text|geometry
+-public|geometry|geometry, integer, boolean|geometry
++public|geometry|point|geometry
+ 
+ -- ================================================================================
+ -- POSTGIS DATA TYPES

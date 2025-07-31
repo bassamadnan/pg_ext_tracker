@@ -1,0 +1,19 @@
+           name           | default_version | installed_version 
+--------------------------+-----------------+-------------------
+ postgis                  | 3.4.3           | 3.4.3
+ postgis-3                | 3.4.3           | 
+ postgis_raster           | 3.4.3           | 
+ postgis_raster-3         | 3.4.3           | 
+ postgis_sfcgal           | 3.4.3           | 
+ postgis_sfcgal-3         | 3.4.3           | 
+ postgis_tiger_geocoder   | 3.4.3           | 3.4.3
+ postgis_tiger_geocoder-3 | 3.4.3           | 
+ postgis_topology         | 3.4.3           | 3.4.3
+ postgis_topology-3       | 3.4.3           | 
+(10 rows)
+
+                                                            version                                                            
+-------------------------------------------------------------------------------------------------------------------------------
+ PostgreSQL 13.16 (Debian 13.16-1.pgdg110+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit
+(1 row)
+

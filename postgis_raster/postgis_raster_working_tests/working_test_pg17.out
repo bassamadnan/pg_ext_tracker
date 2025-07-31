@@ -1,0 +1,130 @@
+-- ================================================================================
+-- POSTGIS RASTER WORKING QUERIES TEST
+-- ================================================================================
+psql:/tmp/raster_working_test.sql:6: NOTICE:  extension "postgis" already exists, skipping
+CREATE EXTENSION
+CREATE EXTENSION
+Extension Status:
+    extname     | extversion 
+----------------+------------
+ postgis        | 3.4.3
+ postgis_raster | 3.4.3
+(2 rows)
+
+-- ================================================================================
+-- TESTING WORKING RASTER MONITORING QUERIES
+-- ================================================================================
+TEST 1: Raster Table Count (Core Metric)
+Query: SELECT COUNT(*) as raster_table_count FROM raster_columns;
+ raster_table_count 
+--------------------
+                  0
+(1 row)
+
+TEST 2: Raster Columns Basic Info
+Query: Basic raster metadata
+ r_table_schema | r_table_name | r_raster_column | srid | num_bands 
+----------------+--------------+-----------------+------+-----------
+(0 rows)
+
+TEST 3: SRID Distribution
+Query: Spatial reference systems used
+ srid | raster_count 
+------+--------------
+(0 rows)
+
+TEST 4: Band Count Statistics
+Query: Number of bands per raster table
+ num_bands | table_count 
+-----------+-------------
+(0 rows)
+
+TEST 5: Pixel Type Analysis
+Query: Pixel data types in use
+ pixel_type | usage_count 
+------------+-------------
+(0 rows)
+
+TEST 6: NoData Value Statistics
+Query: NoData value distribution
+ nodata_value | usage_count 
+--------------+-------------
+(0 rows)
+
+TEST 7: Raster Overview Count
+Query: Number of raster overviews/pyramids
+ overview_count 
+----------------
+              0
+(1 row)
+
+TEST 8: Overview Factor Distribution
+Query: Overview pyramid factors
+ overview_factor | overview_count 
+-----------------+----------------
+(0 rows)
+
+TEST 9: Storage Type Distribution
+Query: In-database vs out-of-database storage
+ storage_type | table_count 
+--------------+-------------
+(0 rows)
+
+TEST 10: Raster Constraint Analysis
+Query: Alignment and blocking constraints
+ same_alignment | regular_blocking | table_count 
+----------------+------------------+-------------
+(0 rows)
+
+TEST 11: Schema-Level Summary
+Query: Raster distribution across schemas
+ r_table_schema | raster_table_count | unique_srids | avg_bands 
+----------------+--------------------+--------------+-----------
+(0 rows)
+
+TEST 12: System-Wide Aggregates
+Query: Overall raster statistics
+ total_raster_tables | unique_srids | avg_bands_per_table | schemas_with_rasters | in_database_tables | aligned_tables 
+---------------------+--------------+---------------------+----------------------+--------------------+----------------
+                   0 |            0 |                     |                    0 |                  0 |              0
+(1 row)
+
+TEST 13: Raster Scale Analysis
+Query: Raster resolution/scale statistics
+ scale_x | scale_y | table_count 
+---------+---------+-------------
+(0 rows)
+
+TEST 14: Block Size Distribution
+Query: Raster tiling/blocking sizes
+ blocksize_x | blocksize_y | table_count 
+-------------+-------------+-------------
+(0 rows)
+
+TEST 15: Coordinate Functions Test
+Query: Test core raster coordinate functions
+psql:/tmp/raster_working_test.sql:191: NOTICE:  PASS: All core raster functions work correctly
+psql:/tmp/raster_working_test.sql:191: NOTICE:  Details - Width: 100, Height: 100, SRID: 4326
+psql:/tmp/raster_working_test.sql:191: NOTICE:  Coordinate test - World: (0, 0), Pixel: (1, 1)
+DO
+TEST 16: Raster Views Accessibility
+Query: Verify all key raster views are accessible
+psql:/tmp/raster_working_test.sql:208: NOTICE:  PASS: raster_columns view is accessible
+psql:/tmp/raster_working_test.sql:208: NOTICE:  PASS: raster_overviews view is accessible
+DO
+-- ================================================================================
+-- SUMMARY OF WORKING QUERIES
+-- ================================================================================
+Summary: All tested queries completed
+These queries are suitable for pgexporter raster monitoring:
+1. Raster table count (raster_columns)
+2. SRID distribution analysis
+3. Band count statistics
+4. Pixel type and NoData analysis
+5. Storage type distribution (in-db vs out-db)
+6. Overview/pyramid information
+7. Schema-level raster distribution
+8. System-wide aggregation metrics
+9. Constraint compliance statistics
+10. Core raster function availability
+PostGIS Raster working queries test complete!

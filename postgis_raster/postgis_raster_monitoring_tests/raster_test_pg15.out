@@ -1,0 +1,141 @@
+-- ================================================================================
+-- POSTGIS RASTER MONITORING TEST
+-- ================================================================================
+psql:/tmp/raster_monitoring_test.sql:6: NOTICE:  extension "postgis" already exists, skipping
+CREATE EXTENSION
+CREATE EXTENSION
+Extension Status:
+    extname     | extversion 
+----------------+------------
+ postgis        | 3.4.3
+ postgis_raster | 3.4.3
+(2 rows)
+
+-- ================================================================================
+-- TESTING RASTER MONITORING QUERIES (EMPTY DATABASE SCENARIO)
+-- ================================================================================
+TEST 1: Raster Tables Count
+Query: SELECT COUNT(*) as raster_table_count FROM raster_columns;
+ raster_table_count 
+--------------------
+                  0
+(1 row)
+
+TEST 2: Raster Columns Details
+Query: Basic raster columns information
+ r_table_schema | r_table_name | r_raster_column | srid | num_bands | pixel_types | nodata_values | out_db 
+----------------+--------------+-----------------+------+-----------+-------------+---------------+--------
+(0 rows)
+
+TEST 3: Raster SRID Distribution
+Query: Distribution of SRIDs in raster data
+ srid | raster_count 
+------+--------------
+(0 rows)
+
+TEST 4: Raster Band Statistics
+Query: Band count distribution
+ num_bands | table_count 
+-----------+-------------
+(0 rows)
+
+TEST 5: Raster Pixel Type Distribution
+Query: Pixel type usage statistics
+ pixel_type | usage_count 
+------------+-------------
+(0 rows)
+
+TEST 6: Raster Overview Information
+Query: Raster overviews and pyramid information
+ r_table_schema | r_table_name | r_raster_column | overview_factor 
+----------------+--------------+-----------------+-----------------
+(0 rows)
+
+TEST 7: Out-of-Database Raster Statistics
+Query: In-database vs out-of-database raster distribution
+ out_db | raster_count 
+--------+--------------
+(0 rows)
+
+TEST 8: Raster Constraint Statistics
+Query: Raster constraint compliance
+ same_alignment | regular_blocking | table_count 
+----------------+------------------+-------------
+(0 rows)
+
+TEST 9: Raster Storage Summary
+Query: Overall raster storage statistics
+ total_raster_tables | unique_srids | avg_bands_per_table | out_db_tables | aligned_tables 
+---------------------+--------------+---------------------+---------------+----------------
+                   0 |            0 |                     |             0 |              0
+(1 row)
+
+TEST 10: Schema-level Raster Distribution
+Query: Raster tables per schema
+ r_table_schema | raster_table_count | unique_srids | avg_bands 
+----------------+--------------------+--------------+-----------
+(0 rows)
+
+-- ================================================================================
+-- CREATING SAMPLE RASTER DATA FOR TESTING
+-- ================================================================================
+Creating sample raster data for validation...
+psql:/tmp/raster_monitoring_test.sql:148: NOTICE:  Error creating sample raster data: The table 'public' does not occur in the search_path
+DO
+psql:/tmp/raster_monitoring_test.sql:174: NOTICE:  Error creating elevation data: The table 'public' does not occur in the search_path
+DO
+-- ================================================================================
+-- RE-RUNNING QUERIES WITH SAMPLE DATA
+-- ================================================================================
+RETEST 1: Raster Tables Count (should show sample tables)
+ raster_table_count 
+--------------------
+                  0
+(1 row)
+
+RETEST 2: Raster Columns Details (should include sample data)
+ r_table_schema | r_table_name | r_raster_column | srid | num_bands | pixel_types | nodata_values | out_db 
+----------------+--------------+-----------------+------+-----------+-------------+---------------+--------
+(0 rows)
+
+RETEST 3: SRID Distribution (should show 4326 and 3857)
+ srid | raster_count 
+------+--------------
+(0 rows)
+
+RETEST 4: Band Statistics (should show different band counts)
+ num_bands | table_count 
+-----------+-------------
+(0 rows)
+
+RETEST 5: Pixel Type Distribution
+ pixel_type | usage_count 
+------------+-------------
+(0 rows)
+
+RETEST 6: Storage Summary (should show sample data statistics)
+ total_raster_tables | unique_srids | avg_bands_per_table | in_db_tables | aligned_tables 
+---------------------+--------------+---------------------+--------------+----------------
+                   0 |            0 |                     |            0 |              0
+(1 row)
+
+-- ================================================================================
+-- RASTER FUNCTION AVAILABILITY TESTS
+-- ================================================================================
+TEST: Core Raster Functions
+Testing basic raster creation and property functions...
+DO
+TEST: Raster Coordinate Functions
+Testing raster coordinate transformation functions...
+psql:/tmp/raster_monitoring_test.sql:263: NOTICE:  FAIL: Core raster functions failed with error: function st_addband(raster, unknown, integer, integer) is not unique
+psql:/tmp/raster_monitoring_test.sql:292: NOTICE:  PASS: Coordinate transformation functions work
+DO
+-- ================================================================================
+-- CLEANUP TEST DATA
+-- ================================================================================
+Cleaning up test raster tables...
+psql:/tmp/raster_monitoring_test.sql:307: NOTICE:  table "test_raster_table" does not exist, skipping
+psql:/tmp/raster_monitoring_test.sql:307: NOTICE:  table "elevation_data" does not exist, skipping
+psql:/tmp/raster_monitoring_test.sql:307: NOTICE:  Test raster tables dropped successfully
+DO
+PostGIS Raster monitoring test complete!

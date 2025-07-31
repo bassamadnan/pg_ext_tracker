@@ -1,0 +1,24 @@
+PostGIS Topology Monitoring Query Test Summary
+=============================================
+
+This test validates all queries from the pgexporter YAML configuration:
+
+1. topology_inventory - Basic topology count
+2. topology_details - Topology information (id, name, srid, precision, hasz)  
+3. topology_srid_distribution - SRID usage statistics
+4. topology_primitives_by_topology - Node/edge/face counts per topology
+5. topology_primitives_total - System-wide primitive totals
+6. topology_layers - Layer information
+7. topology_layer_summary - Layer counts per topology
+8. topology_precision_stats - Precision distribution
+9. node_edge_connectivity - Isolated node detection
+10. face_edge_stats - Face complexity analysis
+11. topology_storage_stats - Table size information
+12. layer_feature_types - Feature type distribution
+
+Test includes:
+- Empty database testing (baseline)
+- Sample data creation and testing
+- Cleanup and validation
+
+Check individual result files for detailed output.
