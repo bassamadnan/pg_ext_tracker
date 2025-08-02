@@ -1,0 +1,28 @@
+-- ================================================================================
+-- UNIVERSAL PG_BUFFERCACHE COMPATIBILITY TEST
+-- ================================================================================
+PostgreSQL and pg_buffercache Extension Information:
+                                                       version                                                       
+---------------------------------------------------------------------------------------------------------------------
+ PostgreSQL 16.9 (Debian 16.9-1.pgdg120+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+(1 row)
+
+    extname     | extversion | extrelocatable | schema_name 
+----------------+------------+----------------+-------------
+ pg_buffercache | 1.4        | t              | public
+(1 row)
+
+Basic pg_buffercache view availability:
+ pg_buffercache_view_available 
+-------------------------------
+ t
+(1 row)
+
+Available pg_buffercache functions:
+        function_name        |                                                                  function_args                                                                   
+-----------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------
+ pg_buffercache_pages        | 
+ pg_buffercache_summary      | OUT buffers_used integer, OUT buffers_unused integer, OUT buffers_dirty integer, OUT buffers_pinned integer, OUT usagecount_avg double precision
+ pg_buffercache_usage_counts | OUT usage_count integer, OUT buffers integer, OUT dirty integer, OUT pinned integer
+(3 rows)
+

@@ -1,0 +1,65 @@
+-- ================================================================================
+-- PG_BUFFERCACHE METRICS COMPATIBILITY TESTS
+-- ================================================================================
+CREATE TABLE
+INSERT 0 1000
+ count 
+-------
+  1000
+(1 row)
+
+TEST 1: Basic Buffer Utilization (All versions)
+Testing basic buffer cache utilization metrics...
+psql:/tmp/buffercache_metrics_tests.sql:34: NOTICE:  PASS: Buffer utilization - Total: 16384, Used: 323, Dirty: 68, Utilization: 1.97%
+DO
+TEST 2: Top Cached Relations (All versions)
+Testing top cached relations metrics...
+psql:/tmp/buffercache_metrics_tests.sql:62: NOTICE:  PASS: Top cached relations - Found 10 relations in cache
+DO
+TEST 3: Cache Hit Effectiveness (All versions)
+Testing cache effectiveness based on usage_count...
+psql:/tmp/buffercache_metrics_tests.sql:85: NOTICE:  PASS: Cache effectiveness - Avg usage count: 3.30, High usage buffers: 205
+DO
+TEST 4: Buffer Cache Pressure (All versions)
+Testing cache pressure indicators...
+psql:/tmp/buffercache_metrics_tests.sql:116: NOTICE:  PASS: Cache pressure - Level: LOW, Dirty ratio: 19.65%
+DO
+TEST 5: Enhanced Summary Functions (PG 16+ / Version 1.4+)
+Testing pg_buffercache_summary and pg_buffercache_usage_counts...
+psql:/tmp/buffercache_metrics_tests.sql:150: NOTICE:  SKIP: pg_buffercache_summary not available (expected in pre-1.4/PG16)
+psql:/tmp/buffercache_metrics_tests.sql:150: NOTICE:  SKIP: pg_buffercache_usage_counts not available (expected in pre-1.4/PG16)
+DO
+TEST 6: Buffer Eviction Function (PG 17+ / Version 1.5+)
+Testing pg_buffercache_evict function...
+psql:/tmp/buffercache_metrics_tests.sql:168: NOTICE:  SKIP: pg_buffercache_evict not available (expected in pre-1.5/PG17)
+DO
+TEST 7: Object Type Distribution (All versions)
+Testing buffer distribution by object type...
+DO
+TEST 8: Sample pgexporter-style Queries (All versions)
+Testing actual metric queries that pgexporter would use...
+Buffer Utilization Query:
+psql:/tmp/buffercache_metrics_tests.sql:189: NOTICE:  PASS: Object distribution - Total objects: 346, Main fork: 303, Other forks: 43
+ total_buffers | used_buffers | utilization_pct 
+---------------+--------------+-----------------
+         16384 |          346 |            2.11
+(1 row)
+
+Dirty Buffer Percentage Query:
+ dirty_buffers | used_buffers | dirty_pct 
+---------------+--------------+-----------
+            68 |          346 |     19.65
+(1 row)
+
+Top Cached Relations Query:
+       relation_name       | buffer_count | cache_pct 
+---------------------------+--------------+-----------
+ pg_attribute              |           35 |     10.06
+ pg_proc                   |           28 |      8.05
+ unknown                   |           17 |      4.89
+ pg_class                  |           17 |      4.89
+ pg_depend_reference_index |           15 |      4.31
+(5 rows)
+
+DROP TABLE
+All metric compatibility tests completed!

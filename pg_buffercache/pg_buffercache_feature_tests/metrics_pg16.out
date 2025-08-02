@@ -1,0 +1,67 @@
+-- ================================================================================
+-- PG_BUFFERCACHE METRICS COMPATIBILITY TESTS
+-- ================================================================================
+CREATE TABLE
+INSERT 0 1000
+ count 
+-------
+  1000
+(1 row)
+
+TEST 1: Basic Buffer Utilization (All versions)
+Testing basic buffer cache utilization metrics...
+psql:/tmp/buffercache_metrics_tests.sql:34: NOTICE:  PASS: Buffer utilization - Total: 16384, Used: 308, Dirty: 65, Utilization: 1.88%
+DO
+TEST 2: Top Cached Relations (All versions)
+Testing top cached relations metrics...
+psql:/tmp/buffercache_metrics_tests.sql:62: NOTICE:  PASS: Top cached relations - Found 10 relations in cache
+DO
+TEST 3: Cache Hit Effectiveness (All versions)
+Testing cache effectiveness based on usage_count...
+DO
+TEST 4: Buffer Cache Pressure (All versions)
+Testing cache pressure indicators...
+psql:/tmp/buffercache_metrics_tests.sql:85: NOTICE:  PASS: Cache effectiveness - Avg usage count: 3.36, High usage buffers: 200
+psql:/tmp/buffercache_metrics_tests.sql:116: NOTICE:  PASS: Cache pressure - Level: LOW, Dirty ratio: 19.64%
+DO
+TEST 5: Enhanced Summary Functions (PG 16+ / Version 1.4+)
+Testing pg_buffercache_summary and pg_buffercache_usage_counts...
+psql:/tmp/buffercache_metrics_tests.sql:150: NOTICE:  PASS: pg_buffercache_summary function available
+psql:/tmp/buffercache_metrics_tests.sql:150: NOTICE:  PASS: pg_buffercache_summary function executed successfully
+psql:/tmp/buffercache_metrics_tests.sql:150: NOTICE:  PASS: pg_buffercache_usage_counts function available
+psql:/tmp/buffercache_metrics_tests.sql:150: NOTICE:  PASS: pg_buffercache_usage_counts function executed successfully
+DO
+TEST 6: Buffer Eviction Function (PG 17+ / Version 1.5+)
+Testing pg_buffercache_evict function...
+psql:/tmp/buffercache_metrics_tests.sql:168: NOTICE:  SKIP: pg_buffercache_evict not available (expected in pre-1.5/PG17)
+DO
+TEST 7: Object Type Distribution (All versions)
+Testing buffer distribution by object type...
+psql:/tmp/buffercache_metrics_tests.sql:189: NOTICE:  PASS: Object distribution - Total objects: 331, Main fork: 287, Other forks: 44
+DO
+TEST 8: Sample pgexporter-style Queries (All versions)
+Testing actual metric queries that pgexporter would use...
+Buffer Utilization Query:
+ total_buffers | used_buffers | utilization_pct 
+---------------+--------------+-----------------
+         16384 |          331 |            2.02
+(1 row)
+
+Dirty Buffer Percentage Query:
+ dirty_buffers | used_buffers | dirty_pct 
+---------------+--------------+-----------
+            65 |          331 |     19.64
+(1 row)
+
+Top Cached Relations Query:
+ relation_name | buffer_count | cache_pct 
+---------------+--------------+-----------
+ pg_attribute  |           36 |     10.84
+ pg_proc       |           31 |      9.34
+ pg_class      |           18 |      5.42
+ unknown       |           14 |      4.22
+ pg_operator   |           14 |      4.22
+(5 rows)
+
+DROP TABLE
+All metric compatibility tests completed!

@@ -1,0 +1,169 @@
+-- PostgreSQL and Extension Version Information
+                                                        version                                                        
+-----------------------------------------------------------------------------------------------------------------------
+ PostgreSQL 14.18 (Debian 14.18-1.pgdg120+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+(1 row)
+
+      name      | default_version | installed_version 
+----------------+-----------------+-------------------
+ pg_buffercache | 1.3             | 1.3
+(1 row)
+
+
+Output format is unaligned.
+-- ================================================================================
+-- EXTENSION VIEW COLUMN INFORMATION
+-- ================================================================================
+view_name|columns
+pg_buffercache|bufferid, relfilenode, reltablespace, reldatabase, relforknumber, relblocknumber, isdirty, usagecount, pinning_backends
+
+-- ================================================================================
+-- EXTENSION FUNCTION INFORMATION
+-- ================================================================================
+function_name|function_args|return_type
+pg_buffercache_pages||record
+
+-- ================================================================================
+-- EXTENSION VIEW DEFINITIONS
+-- ================================================================================
+Field separator is "|
+".
+view_name|
+definition
+pg_buffercache|
+ SELECT p.bufferid,
+    p.relfilenode,
+    p.reltablespace,
+    p.reldatabase,
+    p.relforknumber,
+    p.relblocknumber,
+    p.isdirty,
+    p.usagecount,
+    p.pinning_backends
+   FROM pg_buffercache_pages() p(bufferid integer, relfilenode oid, reltablespace oid, reldatabase oid, relforknumber smallint, relblocknumber bigint, isdirty boolean, usagecount smallint, pinning_backends integer);
+
+-- ================================================================================
+-- EXTENSION COLUMN DETAILS
+-- ================================================================================
+view_name|
+column_name|
+data_type|
+column_position|
+nullable
+pg_buffercache|
+bufferid|
+integer|
+1|
+NULL
+pg_buffercache|
+relfilenode|
+oid|
+2|
+NULL
+pg_buffercache|
+reltablespace|
+oid|
+3|
+NULL
+pg_buffercache|
+reldatabase|
+oid|
+4|
+NULL
+pg_buffercache|
+relforknumber|
+smallint|
+5|
+NULL
+pg_buffercache|
+relblocknumber|
+bigint|
+6|
+NULL
+pg_buffercache|
+isdirty|
+boolean|
+7|
+NULL
+pg_buffercache|
+usagecount|
+smallint|
+8|
+NULL
+pg_buffercache|
+pinning_backends|
+integer|
+9|
+NULL
+
+-- ================================================================================
+-- EXTENSION SAMPLE DATA STRUCTURE
+-- ================================================================================
+bufferid|
+relfilenode|
+reltablespace|
+reldatabase|
+relforknumber|
+relblocknumber|
+isdirty|
+usagecount|
+pinning_backends
+1|
+1262|
+1664|
+0|
+0|
+0|
+f|
+5|
+0
+2|
+1260|
+1664|
+0|
+0|
+0|
+f|
+5|
+0
+3|
+1259|
+1663|
+13780|
+0|
+0|
+t|
+5|
+0
+4|
+1259|
+1663|
+13780|
+0|
+1|
+f|
+5|
+0
+5|
+1259|
+1663|
+13780|
+0|
+2|
+f|
+5|
+0
+
+-- ================================================================================
+-- EXTENSION METADATA
+-- ================================================================================
+extname|
+extversion|
+schema|
+extrelocatable|
+owner
+pg_buffercache|
+1.3|
+public|
+t|
+postgres
