@@ -1,0 +1,93 @@
+-- ================================================================================
+-- PGVECTOR METRICS COMPATIBILITY TESTS
+-- ================================================================================
+TEST 1: Vector Column Inventory
+Testing vector column discovery...
+psql:/tmp/pgvector_metrics_tests.sql:21: NOTICE:  PASS: Vector columns found - Count: 2
+DO
+TEST 2: Vector Index Usage Statistics
+Testing vector index monitoring...
+psql:/tmp/pgvector_metrics_tests.sql:43: NOTICE:  PASS: Vector indexes found - HNSW: 2, IVFFlat: 0
+DO
+TEST 3: Vector Table Storage
+Testing vector table size monitoring...
+DO
+TEST 4: pgvector Configuration Settings
+Testing pgvector configuration monitoring...
+psql:/tmp/pgvector_metrics_tests.sql:72: NOTICE:  PASS: Vector tables found - Count: 2, Total size: 1916928 bytes
+DO
+TEST 5: Vector Dimension Analysis
+Testing vector dimension monitoring...
+psql:/tmp/pgvector_metrics_tests.sql:90: NOTICE:  PASS: pgvector config parameters found - Count: 7
+DO
+TEST 6: Sample pgexporter-style Queries
+Testing actual metric queries that pgexporter would use...
+Vector Column Inventory Query:
+psql:/tmp/pgvector_metrics_tests.sql:112: NOTICE:  SKIP: Vector dimension info not available through standard columns (expected)
+ schema_name |   table_name   | vector_columns 
+-------------+----------------+----------------
+ public      | test_documents |              1
+ public      | test_products  |              1
+(2 rows)
+
+Vector Index Usage Query:
+psql:/tmp/pgvector_metrics_tests.sql:144: ERROR:  column "tablename" does not exist
+LINE 3:   tablename,
+          ^
+HNSW Index Statistics Query:
+ schemaname |   tablename    |     indexname      | index_size_bytes | idx_scan | idx_tup_read | idx_tup_fetch 
+------------+----------------+--------------------+------------------+----------+--------------+---------------
+ public     | test_products  | idx_products_hnsw  |            32768 |        0 |            0 |             0
+ public     | test_documents | idx_documents_hnsw |            49152 |        0 |            0 |             0
+(2 rows)
+
+IVFFlat Index Statistics Query:
+ schemaname |   tablename   |      indexname       | index_size_bytes | idx_scan | idx_tup_read | idx_tup_fetch 
+------------+---------------+----------------------+------------------+----------+--------------+---------------
+ public     | test_products | idx_products_ivfflat |          1146880 |        0 |            0 |             0
+(1 row)
+
+Vector Table Storage Query:
+ schema_name |   table_name   | total_size_bytes | table_size_bytes 
+-------------+----------------+------------------+------------------
+ public      | test_products  |          1392640 |           163840
+ public      | test_documents |           524288 |             8192
+(2 rows)
+
+pgvector Configuration Query:
+           name           | setting | unit |      category      |                         short_desc                         | context 
+--------------------------+---------+------+--------------------+------------------------------------------------------------+---------
+ hnsw.ef_search           | 40      |      | Customized Options | Sets the size of the dynamic candidate list for search     | user
+ hnsw.iterative_scan      | off     |      | Customized Options | Sets the mode for iterative scans                          | user
+ hnsw.max_scan_tuples     | 20000   |      | Customized Options | Sets the max number of tuples to visit for iterative scans | user
+ hnsw.scan_mem_multiplier | 1       |      | Customized Options | Sets the multiple of work_mem to use for iterative scans   | user
+ ivfflat.iterative_scan   | off     |      | Customized Options | Sets the mode for iterative scans                          | user
+ ivfflat.max_probes       | 32768   |      | Customized Options | Sets the max number of probes for iterative scans          | user
+ ivfflat.probes           | 1       |      | Customized Options | Sets the number of probes                                  | user
+(7 rows)
+
+Available Vector Operators Query:
+ operator_name | left_type | right_type | result_type 
+---------------+-----------+------------+-------------
+ <#>           | vector    | vector     | float8
+ <+>           | vector    | vector     | float8
+ <->           | vector    | vector     | float8
+ <=>           | vector    | vector     | float8
+(4 rows)
+
+TEST 7: Additional Vector Metrics
+Testing additional useful vector metrics...
+Vector Index Count by Type:
+ index_type | index_count 
+------------+-------------
+ hnsw       |           2
+(1 row)
+
+Vector Tables with Row Counts:
+ table_schema |   table_name   | estimated_rows 
+--------------+----------------+----------------
+ public       | test_products  |            100
+ public       | test_documents |             50
+(2 rows)
+
+All pgvector metric compatibility tests completed!

@@ -1,0 +1,27 @@
+-- ================================================================================
+-- UNIVERSAL PGVECTOR COMPATIBILITY TEST
+-- ================================================================================
+PostgreSQL and pgvector Extension Information:
+                                                       version                                                       
+---------------------------------------------------------------------------------------------------------------------
+ PostgreSQL 16.9 (Debian 16.9-1.pgdg120+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+(1 row)
+
+ extname | extversion | extrelocatable | schema_name 
+---------+------------+----------------+-------------
+ vector  | 0.8.0      | t              | public
+(1 row)
+
+Vector type availability:
+ vector_type_available 
+-----------------------
+ t
+(1 row)
+
+Available vector access methods:
+ amname  
+---------
+ ivfflat
+ hnsw
+(2 rows)
+

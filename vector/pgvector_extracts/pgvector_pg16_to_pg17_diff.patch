@@ -1,0 +1,84 @@
+--- pgvector_extracts/pgvector_pg16.out	2025-08-06 12:14:00.807231731 +0530
++++ pgvector_extracts/pgvector_pg17.out	2025-08-06 12:14:25.165118589 +0530
+@@ -1,7 +1,7 @@
+ -- PostgreSQL and pgvector Version Information
+                                                        version                                                       
+ ---------------------------------------------------------------------------------------------------------------------
+- PostgreSQL 16.9 (Debian 16.9-1.pgdg120+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
++ PostgreSQL 17.5 (Debian 17.5-1.pgdg120+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+ (1 row)
+ 
+  extname | extversion 
+@@ -135,8 +135,8 @@
+ pg_catalog|gin_tsquery_consistent|internal, smallint, tsvector, integer, internal, internal, internal, internal|bool|GIN tsvector support
+ pg_catalog|gin_tsquery_triconsistent|internal, smallint, tsvector, integer, internal, internal, internal|char|GIN tsvector support
+ pg_catalog|gtsvector_compress|internal|internal|GiST tsvector support
+-pg_catalog|gtsvector_consistent|internal, gtsvector, integer, oid, internal|bool|GiST tsvector support (obsolete)
+ pg_catalog|gtsvector_consistent|internal, tsvector, smallint, oid, internal|bool|GiST tsvector support
++pg_catalog|gtsvector_consistent|internal, gtsvector, integer, oid, internal|bool|GiST tsvector support (obsolete)
+ pg_catalog|gtsvector_decompress|internal|internal|GiST tsvector support
+ pg_catalog|gtsvector_options|internal|void|GiST tsvector support
+ pg_catalog|gtsvector_penalty|internal, internal, internal|internal|GiST tsvector support
+@@ -171,25 +171,25 @@
+ pg_catalog|setweight|tsvector, "char"|tsvector|set given weight for whole tsvector
+ pg_catalog|setweight|tsvector, "char", text[]|tsvector|set given weight for given lexemes
+ pg_catalog|strip|tsvector|tsvector|strip position information
++pg_catalog|to_tsvector|json|tsvector|transform string values from json to tsvector
+ pg_catalog|to_tsvector|jsonb|tsvector|transform string values from jsonb to tsvector
+-pg_catalog|to_tsvector|regconfig, jsonb|tsvector|transform string values from jsonb to tsvector
++pg_catalog|to_tsvector|text|tsvector|transform to tsvector
+ pg_catalog|to_tsvector|regconfig, json|tsvector|transform string values from json to tsvector
+-pg_catalog|to_tsvector|json|tsvector|transform string values from json to tsvector
+ pg_catalog|to_tsvector|regconfig, text|tsvector|transform to tsvector
+-pg_catalog|to_tsvector|text|tsvector|transform to tsvector
++pg_catalog|to_tsvector|regconfig, jsonb|tsvector|transform string values from jsonb to tsvector
+ pg_catalog|ts_delete|tsvector, text|tsvector|delete lexeme
+ pg_catalog|ts_delete|tsvector, text[]|tsvector|delete given lexemes
+ pg_catalog|ts_filter|tsvector, "char"[]|tsvector|delete lexemes that do not have one of the given weights
+ pg_catalog|ts_match_qv|tsquery, tsvector|bool|implementation of @@ operator
+ pg_catalog|ts_match_vq|tsvector, tsquery|bool|implementation of @@ operator
++pg_catalog|ts_rank|tsvector, tsquery|float4|relevance
+ pg_catalog|ts_rank|real[], tsvector, tsquery, integer|float4|relevance
+-pg_catalog|ts_rank|tsvector, tsquery, integer|float4|relevance
+ pg_catalog|ts_rank|real[], tsvector, tsquery|float4|relevance
+-pg_catalog|ts_rank|tsvector, tsquery|float4|relevance
+-pg_catalog|ts_rank_cd|real[], tsvector, tsquery|float4|relevance
++pg_catalog|ts_rank|tsvector, tsquery, integer|float4|relevance
++pg_catalog|ts_rank_cd|tsvector, tsquery, integer|float4|relevance
+ pg_catalog|ts_rank_cd|real[], tsvector, tsquery, integer|float4|relevance
++pg_catalog|ts_rank_cd|real[], tsvector, tsquery|float4|relevance
+ pg_catalog|ts_rank_cd|tsvector, tsquery|float4|relevance
+-pg_catalog|ts_rank_cd|tsvector, tsquery, integer|float4|relevance
+ pg_catalog|tsvector_cmp|tsvector, tsvector|int4|less-equal-greater
+ pg_catalog|tsvector_concat|tsvector, tsvector|tsvector|implementation of || operator
+ pg_catalog|tsvector_eq|tsvector, tsvector|bool|implementation of = operator
+@@ -206,22 +206,22 @@
+ pg_catalog|tsvectorrecv|internal|tsvector|I/O
+ pg_catalog|tsvectorsend|tsvector|bytea|I/O
+ pg_catalog|unnest|tsvector tsvector, OUT lexeme text, OUT positions smallint[], OUT weights text[]|record|expand tsvector to set of rows
+-public|array_to_vector|numeric[], integer, boolean|vector|
+-public|array_to_vector|double precision[], integer, boolean|vector|
+-public|array_to_vector|integer[], integer, boolean|vector|
+ public|array_to_vector|real[], integer, boolean|vector|
++public|array_to_vector|integer[], integer, boolean|vector|
++public|array_to_vector|double precision[], integer, boolean|vector|
++public|array_to_vector|numeric[], integer, boolean|vector|
+ public|avg|vector|vector|
+ public|binary_quantize|vector|bit|
+-public|cosine_distance|vector, vector|float8|
+-public|cosine_distance|halfvec, halfvec|float8|
+ public|cosine_distance|sparsevec, sparsevec|float8|
++public|cosine_distance|halfvec, halfvec|float8|
++public|cosine_distance|vector, vector|float8|
+ public|halfvec_to_vector|halfvec, integer, boolean|vector|
+ public|inner_product|vector, vector|float8|
+ public|inner_product|halfvec, halfvec|float8|
+ public|inner_product|sparsevec, sparsevec|float8|
+-public|l1_distance|vector, vector|float8|
+-public|l1_distance|halfvec, halfvec|float8|
+ public|l1_distance|sparsevec, sparsevec|float8|
++public|l1_distance|halfvec, halfvec|float8|
++public|l1_distance|vector, vector|float8|
+ public|l2_distance|halfvec, halfvec|float8|
+ public|l2_distance|sparsevec, sparsevec|float8|
+ public|l2_distance|vector, vector|float8|

@@ -1,0 +1,341 @@
+-- PostgreSQL and pgvector Version Information
+                                                       version                                                       
+---------------------------------------------------------------------------------------------------------------------
+ PostgreSQL 17.5 (Debian 17.5-1.pgdg120+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+(1 row)
+
+ extname | extversion 
+---------+------------
+ vector  | 0.8.0
+(1 row)
+
+
+Output format is unaligned.
+-- ================================================================================
+-- PGVECTOR EXTENSION INFORMATION
+-- ================================================================================
+extname|extversion|extrelocatable|schema_name
+vector|0.8.0|t|public
+
+-- ================================================================================
+-- PGVECTOR DATA TYPES
+-- ================================================================================
+type_name|schema_name|type_type|type_length|description
+_gtsvector|pg_catalog|b|-1|
+_int2vector|pg_catalog|b|-1|
+_oidvector|pg_catalog|b|-1|
+_tsvector|pg_catalog|b|-1|
+gtsvector|pg_catalog|b|-1|GiST index internal text representation for text search
+int2vector|pg_catalog|b|-1|array of int2, used in system tables
+oidvector|pg_catalog|b|-1|array of oids, used in system tables
+tsvector|pg_catalog|b|-1|text representation for text search
+_test_vectors|public|b|-1|
+_vector|public|b|-1|
+test_vectors|public|c|-1|
+vector|public|b|-1|
+
+-- ================================================================================
+-- PGVECTOR OPERATORS
+-- ================================================================================
+operator_name|left_type|right_type|result_type|schema_name|description
+<|oidvector|oidvector|bool|pg_catalog|less than
+<|tsvector|tsvector|bool|pg_catalog|less than
+<->|box|box|float8|pg_catalog|distance between
+<->|box|lseg|float8|pg_catalog|distance between
+<->|box|point|float8|pg_catalog|distance between
+<->|circle|circle|float8|pg_catalog|distance between
+<->|circle|point|float8|pg_catalog|distance between
+<->|circle|polygon|float8|pg_catalog|distance between
+<->|line|line|float8|pg_catalog|distance between
+<->|line|lseg|float8|pg_catalog|distance between
+<->|line|point|float8|pg_catalog|distance between
+<->|lseg|box|float8|pg_catalog|distance between
+<->|lseg|line|float8|pg_catalog|distance between
+<->|lseg|lseg|float8|pg_catalog|distance between
+<->|lseg|point|float8|pg_catalog|distance between
+<->|path|path|float8|pg_catalog|distance between
+<->|path|point|float8|pg_catalog|distance between
+<->|point|box|float8|pg_catalog|distance between
+<->|point|circle|float8|pg_catalog|distance between
+<->|point|line|float8|pg_catalog|distance between
+<->|point|lseg|float8|pg_catalog|distance between
+<->|point|path|float8|pg_catalog|distance between
+<->|point|point|float8|pg_catalog|distance between
+<->|point|polygon|float8|pg_catalog|distance between
+<->|polygon|circle|float8|pg_catalog|distance between
+<->|polygon|point|float8|pg_catalog|distance between
+<->|polygon|polygon|float8|pg_catalog|distance between
+<->|tsquery|tsquery|tsquery|pg_catalog|phrase-concatenate
+<=|oidvector|oidvector|bool|pg_catalog|less than or equal
+<=|tsvector|tsvector|bool|pg_catalog|less than or equal
+<>|oidvector|oidvector|bool|pg_catalog|not equal
+<>|tsvector|tsvector|bool|pg_catalog|not equal
+=|oidvector|oidvector|bool|pg_catalog|equal
+=|tsvector|tsvector|bool|pg_catalog|equal
+>|oidvector|oidvector|bool|pg_catalog|greater than
+>|tsvector|tsvector|bool|pg_catalog|greater than
+>=|oidvector|oidvector|bool|pg_catalog|greater than or equal
+>=|tsvector|tsvector|bool|pg_catalog|greater than or equal
+@@|tsquery|tsvector|bool|pg_catalog|text search match
+@@|tsvector|tsquery|bool|pg_catalog|text search match
+@@@|tsquery|tsvector|bool|pg_catalog|deprecated, use @@ instead
+@@@|tsvector|tsquery|bool|pg_catalog|deprecated, use @@ instead
+|||tsvector|tsvector|tsvector|pg_catalog|concatenate
+*|vector|vector|vector|public|
++|vector|vector|vector|public|
+-|vector|vector|vector|public|
+<|vector|vector|bool|public|
+<#>|halfvec|halfvec|float8|public|
+<#>|sparsevec|sparsevec|float8|public|
+<#>|vector|vector|float8|public|
+<+>|halfvec|halfvec|float8|public|
+<+>|sparsevec|sparsevec|float8|public|
+<+>|vector|vector|float8|public|
+<->|halfvec|halfvec|float8|public|
+<->|sparsevec|sparsevec|float8|public|
+<->|vector|vector|float8|public|
+<=|vector|vector|bool|public|
+<=>|halfvec|halfvec|float8|public|
+<=>|sparsevec|sparsevec|float8|public|
+<=>|vector|vector|float8|public|
+<>|vector|vector|bool|public|
+<~>|bit|bit|float8|public|
+=|vector|vector|bool|public|
+>|vector|vector|bool|public|
+>=|vector|vector|bool|public|
+|||vector|vector|vector|public|
+
+-- ================================================================================
+-- PGVECTOR OPERATOR CLASSES
+-- ================================================================================
+opclass_name|index_method|input_type|schema_name|is_default
+oidvector_ops|btree|oidvector|pg_catalog|t
+tsvector_ops|btree|tsvector|pg_catalog|t
+vector_ops|btree|vector|public|t
+tsvector_ops|gin|tsvector|pg_catalog|t
+tsvector_ops|gist|tsvector|pg_catalog|t
+oidvector_ops|hash|oidvector|pg_catalog|t
+vector_cosine_ops|hnsw|vector|public|f
+vector_ip_ops|hnsw|vector|public|f
+vector_l1_ops|hnsw|vector|public|f
+vector_l2_ops|hnsw|vector|public|f
+vector_cosine_ops|ivfflat|vector|public|f
+vector_ip_ops|ivfflat|vector|public|f
+vector_l2_ops|ivfflat|vector|public|t
+
+-- ================================================================================
+-- PGVECTOR FUNCTIONS
+-- ================================================================================
+schema_name|function_name|function_args|return_type|description
+pg_catalog|array_to_tsvector|text[]|tsvector|build tsvector from array of lexemes
+pg_catalog|btoidvectorcmp|oidvector, oidvector|int4|less-equal-greater
+pg_catalog|gin_extract_tsquery|tsvector, internal, smallint, internal, internal, internal, internal|internal|GIN tsvector support
+pg_catalog|gin_extract_tsvector|tsvector, internal|internal|GIN tsvector support (obsolete)
+pg_catalog|gin_extract_tsvector|tsvector, internal, internal|internal|GIN tsvector support
+pg_catalog|gin_tsquery_consistent|internal, smallint, tsvector, integer, internal, internal, internal, internal|bool|GIN tsvector support
+pg_catalog|gin_tsquery_triconsistent|internal, smallint, tsvector, integer, internal, internal, internal|char|GIN tsvector support
+pg_catalog|gtsvector_compress|internal|internal|GiST tsvector support
+pg_catalog|gtsvector_consistent|internal, tsvector, smallint, oid, internal|bool|GiST tsvector support
+pg_catalog|gtsvector_consistent|internal, gtsvector, integer, oid, internal|bool|GiST tsvector support (obsolete)
+pg_catalog|gtsvector_decompress|internal|internal|GiST tsvector support
+pg_catalog|gtsvector_options|internal|void|GiST tsvector support
+pg_catalog|gtsvector_penalty|internal, internal, internal|internal|GiST tsvector support
+pg_catalog|gtsvector_picksplit|internal, internal|internal|GiST tsvector support
+pg_catalog|gtsvector_same|gtsvector, gtsvector, internal|internal|GiST tsvector support
+pg_catalog|gtsvector_union|internal, internal|gtsvector|GiST tsvector support
+pg_catalog|gtsvectorin|cstring|gtsvector|I/O
+pg_catalog|gtsvectorout|gtsvector|cstring|I/O
+pg_catalog|hashoidvector|oidvector|int4|hash
+pg_catalog|hashoidvectorextended|oidvector, bigint|int8|hash
+pg_catalog|int2vectorin|cstring|int2vector|I/O
+pg_catalog|int2vectorout|int2vector|cstring|I/O
+pg_catalog|int2vectorrecv|internal|int2vector|I/O
+pg_catalog|int2vectorsend|int2vector|bytea|I/O
+pg_catalog|json_to_tsvector|json, jsonb|tsvector|transform specified values from json to tsvector
+pg_catalog|json_to_tsvector|regconfig, json, jsonb|tsvector|transform specified values from json to tsvector
+pg_catalog|jsonb_to_tsvector|jsonb, jsonb|tsvector|transform specified values from jsonb to tsvector
+pg_catalog|jsonb_to_tsvector|regconfig, jsonb, jsonb|tsvector|transform specified values from jsonb to tsvector
+pg_catalog|length|tsvector|int4|number of lexemes
+pg_catalog|oidvectoreq|oidvector, oidvector|bool|implementation of = operator
+pg_catalog|oidvectorge|oidvector, oidvector|bool|implementation of >= operator
+pg_catalog|oidvectorgt|oidvector, oidvector|bool|implementation of > operator
+pg_catalog|oidvectorin|cstring|oidvector|I/O
+pg_catalog|oidvectorle|oidvector, oidvector|bool|implementation of <= operator
+pg_catalog|oidvectorlt|oidvector, oidvector|bool|implementation of < operator
+pg_catalog|oidvectorne|oidvector, oidvector|bool|implementation of <> operator
+pg_catalog|oidvectorout|oidvector|cstring|I/O
+pg_catalog|oidvectorrecv|internal|oidvector|I/O
+pg_catalog|oidvectorsend|oidvector|bytea|I/O
+pg_catalog|oidvectortypes|oidvector|text|print type names of oidvector field
+pg_catalog|pg_get_publication_tables|VARIADIC pubname text[], OUT pubid oid, OUT relid oid, OUT attrs int2vector, OUT qual pg_node_tree|record|get information of the tables that are part of the specified publications
+pg_catalog|setweight|tsvector, "char"|tsvector|set given weight for whole tsvector
+pg_catalog|setweight|tsvector, "char", text[]|tsvector|set given weight for given lexemes
+pg_catalog|strip|tsvector|tsvector|strip position information
+pg_catalog|to_tsvector|json|tsvector|transform string values from json to tsvector
+pg_catalog|to_tsvector|jsonb|tsvector|transform string values from jsonb to tsvector
+pg_catalog|to_tsvector|text|tsvector|transform to tsvector
+pg_catalog|to_tsvector|regconfig, json|tsvector|transform string values from json to tsvector
+pg_catalog|to_tsvector|regconfig, text|tsvector|transform to tsvector
+pg_catalog|to_tsvector|regconfig, jsonb|tsvector|transform string values from jsonb to tsvector
+pg_catalog|ts_delete|tsvector, text|tsvector|delete lexeme
+pg_catalog|ts_delete|tsvector, text[]|tsvector|delete given lexemes
+pg_catalog|ts_filter|tsvector, "char"[]|tsvector|delete lexemes that do not have one of the given weights
+pg_catalog|ts_match_qv|tsquery, tsvector|bool|implementation of @@ operator
+pg_catalog|ts_match_vq|tsvector, tsquery|bool|implementation of @@ operator
+pg_catalog|ts_rank|tsvector, tsquery|float4|relevance
+pg_catalog|ts_rank|real[], tsvector, tsquery, integer|float4|relevance
+pg_catalog|ts_rank|real[], tsvector, tsquery|float4|relevance
+pg_catalog|ts_rank|tsvector, tsquery, integer|float4|relevance
+pg_catalog|ts_rank_cd|tsvector, tsquery, integer|float4|relevance
+pg_catalog|ts_rank_cd|real[], tsvector, tsquery, integer|float4|relevance
+pg_catalog|ts_rank_cd|real[], tsvector, tsquery|float4|relevance
+pg_catalog|ts_rank_cd|tsvector, tsquery|float4|relevance
+pg_catalog|tsvector_cmp|tsvector, tsvector|int4|less-equal-greater
+pg_catalog|tsvector_concat|tsvector, tsvector|tsvector|implementation of || operator
+pg_catalog|tsvector_eq|tsvector, tsvector|bool|implementation of = operator
+pg_catalog|tsvector_ge|tsvector, tsvector|bool|implementation of >= operator
+pg_catalog|tsvector_gt|tsvector, tsvector|bool|implementation of > operator
+pg_catalog|tsvector_le|tsvector, tsvector|bool|implementation of <= operator
+pg_catalog|tsvector_lt|tsvector, tsvector|bool|implementation of < operator
+pg_catalog|tsvector_ne|tsvector, tsvector|bool|implementation of <> operator
+pg_catalog|tsvector_to_array|tsvector|_text|convert tsvector to array of lexemes
+pg_catalog|tsvector_update_trigger||trigger|trigger for automatic update of tsvector column
+pg_catalog|tsvector_update_trigger_column||trigger|trigger for automatic update of tsvector column
+pg_catalog|tsvectorin|cstring|tsvector|I/O
+pg_catalog|tsvectorout|tsvector|cstring|I/O
+pg_catalog|tsvectorrecv|internal|tsvector|I/O
+pg_catalog|tsvectorsend|tsvector|bytea|I/O
+pg_catalog|unnest|tsvector tsvector, OUT lexeme text, OUT positions smallint[], OUT weights text[]|record|expand tsvector to set of rows
+public|array_to_vector|real[], integer, boolean|vector|
+public|array_to_vector|integer[], integer, boolean|vector|
+public|array_to_vector|double precision[], integer, boolean|vector|
+public|array_to_vector|numeric[], integer, boolean|vector|
+public|avg|vector|vector|
+public|binary_quantize|vector|bit|
+public|cosine_distance|sparsevec, sparsevec|float8|
+public|cosine_distance|halfvec, halfvec|float8|
+public|cosine_distance|vector, vector|float8|
+public|halfvec_to_vector|halfvec, integer, boolean|vector|
+public|inner_product|vector, vector|float8|
+public|inner_product|halfvec, halfvec|float8|
+public|inner_product|sparsevec, sparsevec|float8|
+public|l1_distance|sparsevec, sparsevec|float8|
+public|l1_distance|halfvec, halfvec|float8|
+public|l1_distance|vector, vector|float8|
+public|l2_distance|halfvec, halfvec|float8|
+public|l2_distance|sparsevec, sparsevec|float8|
+public|l2_distance|vector, vector|float8|
+public|l2_normalize|vector|vector|
+public|sparsevec_to_vector|sparsevec, integer, boolean|vector|
+public|subvector|vector, integer, integer|vector|
+public|subvector|halfvec, integer, integer|halfvec|
+public|sum|vector|vector|
+public|vector|vector, integer, boolean|vector|
+public|vector_accum|double precision[], vector|_float8|
+public|vector_add|vector, vector|vector|
+public|vector_avg|double precision[]|vector|
+public|vector_cmp|vector, vector|int4|
+public|vector_combine|double precision[], double precision[]|_float8|
+public|vector_concat|vector, vector|vector|
+public|vector_dims|halfvec|int4|
+public|vector_dims|vector|int4|
+public|vector_eq|vector, vector|bool|
+public|vector_ge|vector, vector|bool|
+public|vector_gt|vector, vector|bool|
+public|vector_in|cstring, oid, integer|vector|
+public|vector_l2_squared_distance|vector, vector|float8|
+public|vector_le|vector, vector|bool|
+public|vector_lt|vector, vector|bool|
+public|vector_mul|vector, vector|vector|
+public|vector_ne|vector, vector|bool|
+public|vector_negative_inner_product|vector, vector|float8|
+public|vector_norm|vector|float8|
+public|vector_out|vector|cstring|
+public|vector_recv|internal, oid, integer|vector|
+public|vector_send|vector|bytea|
+public|vector_spherical_distance|vector, vector|float8|
+public|vector_sub|vector, vector|vector|
+public|vector_to_float4|vector, integer, boolean|_float4|
+public|vector_to_halfvec|vector, integer, boolean|halfvec|
+public|vector_to_sparsevec|vector, integer, boolean|sparsevec|
+public|vector_typmod_in|cstring[]|int4|
+
+-- ================================================================================
+-- PGVECTOR INDEX ACCESS METHODS
+-- ================================================================================
+access_method|description
+hnsw|hnsw index access method
+ivfflat|ivfflat index access method
+
+-- ================================================================================
+-- PGVECTOR SYSTEM CATALOG ENTRIES
+-- ================================================================================
+table_schema|table_name|column_name|data_type|udt_name
+public|test_vectors|embedding|USER-DEFINED|vector
+
+-- ================================================================================
+-- PGVECTOR INDEXES IN CURRENT DATABASE
+-- ================================================================================
+schemaname|tablename|indexname|indexdef
+public|test_vectors|test_hnsw_idx|CREATE INDEX test_hnsw_idx ON public.test_vectors USING hnsw (embedding vector_cosine_ops)
+public|test_vectors|test_ivfflat_idx|CREATE INDEX test_ivfflat_idx ON public.test_vectors USING ivfflat (embedding)
+public|test_vectors|test_vectors_pkey|CREATE UNIQUE INDEX test_vectors_pkey ON public.test_vectors USING btree (id)
+
+-- ================================================================================
+-- PGVECTOR CONFIGURATION SETTINGS
+-- ================================================================================
+name|setting|unit|category|short_desc|context
+hnsw.ef_search|40||Customized Options|Sets the size of the dynamic candidate list for search|user
+hnsw.iterative_scan|off||Customized Options|Sets the mode for iterative scans|user
+hnsw.max_scan_tuples|20000||Customized Options|Sets the max number of tuples to visit for iterative scans|user
+hnsw.scan_mem_multiplier|1||Customized Options|Sets the multiple of work_mem to use for iterative scans|user
+ivfflat.iterative_scan|off||Customized Options|Sets the mode for iterative scans|user
+ivfflat.max_probes|32768||Customized Options|Sets the max number of probes for iterative scans|user
+ivfflat.probes|1||Customized Options|Sets the number of probes|user
+
+-- ================================================================================
+-- PGVECTOR AVAILABLE OPERATOR FAMILIES
+-- ================================================================================
+family_name|access_method|schema_name|input_type
+oidvector_ops|btree|pg_catalog|oidvector
+tsvector_ops|btree|pg_catalog|tsvector
+vector_ops|btree|public|vector
+tsvector_ops|gin|pg_catalog|tsvector
+tsvector_ops|gist|pg_catalog|tsvector
+oidvector_ops|hash|pg_catalog|oidvector
+bit_hamming_ops|hnsw|public|bit
+bit_jaccard_ops|hnsw|public|bit
+halfvec_cosine_ops|hnsw|public|halfvec
+halfvec_ip_ops|hnsw|public|halfvec
+halfvec_l1_ops|hnsw|public|halfvec
+halfvec_l2_ops|hnsw|public|halfvec
+sparsevec_cosine_ops|hnsw|public|sparsevec
+sparsevec_ip_ops|hnsw|public|sparsevec
+sparsevec_l1_ops|hnsw|public|sparsevec
+sparsevec_l2_ops|hnsw|public|sparsevec
+vector_cosine_ops|hnsw|public|vector
+vector_ip_ops|hnsw|public|vector
+vector_l1_ops|hnsw|public|vector
+vector_l2_ops|hnsw|public|vector
+bit_hamming_ops|ivfflat|public|bit
+halfvec_cosine_ops|ivfflat|public|halfvec
+halfvec_ip_ops|ivfflat|public|halfvec
+halfvec_l2_ops|ivfflat|public|halfvec
+vector_cosine_ops|ivfflat|public|vector
+vector_ip_ops|ivfflat|public|vector
+vector_l2_ops|ivfflat|public|vector
+
+-- ================================================================================
+-- PGVECTOR CAST INFORMATION
+-- ================================================================================
+source_type|target_type|cast_context|cast_method
+_float4|vector|a|f
+_float8|vector|a|f
+_int4|vector|a|f
+_numeric|vector|a|f
+halfvec|vector|a|f
+sparsevec|vector|a|f
+vector|_float4|i|f
+vector|halfvec|i|f
+vector|sparsevec|i|f
+vector|vector|i|f
